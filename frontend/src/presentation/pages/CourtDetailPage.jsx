@@ -67,14 +67,14 @@ function CourtDetailPage() {
   // Efecto para cargar la disponibilidad semanal cuando se cargan los detalles de la cancha
   useEffect(() => {
     if (court) {
-      console.log("DEBUG Frontend: useEffect para disponibilidad semanal activado.");
+      //console.log("DEBUG Frontend: useEffect para disponibilidad semanal activado.");
       fetchWeeklyAvailability();
     }
   }, [court, courtId, currentWeekStartDate, getWeeklyAvailabilityUseCase]);
 
   // Función para obtener la disponibilidad semanal para el calendario
   const fetchWeeklyAvailability = async () => {
-    console.log("DEBUG Frontend: fetchWeeklyAvailability llamada.");
+    //console.log("DEBUG Frontend: fetchWeeklyAvailability llamada.");
     setLoadingWeeklyAvailability(true);
     setWeeklyAvailabilityError(null);
 
@@ -86,7 +86,7 @@ function CourtDetailPage() {
 
     try {
       const weeklyAvailabilityResults = await getWeeklyAvailabilityUseCase.execute(courtId, formattedStartTime, formattedEndTime);
-      console.log("DEBUG Frontend: Respuesta de disponibilidad semanal recibida:", weeklyAvailabilityResults);
+      //console.log("DEBUG Frontend: Respuesta de disponibilidad semanal recibida:", weeklyAvailabilityResults);
       setWeeklyAvailability({ ...weeklyAvailabilityResults });
       setLoadingWeeklyAvailability(false);
     } catch (err) {
@@ -335,18 +335,18 @@ function CourtDetailPage() {
       )}
 
       {/* Test button*/}
-      <div class="availability-container-b">
-        <div class="availability-header-moder">
-          <div class="header-content-b">
-            <div class="header-title-b">
-              <div class="header-icon">📅</div>
-              <div class="header-text">
+      <div className="availability-container-b">
+        <div className="availability-header-moder">
+          <div className="header-content-b">
+            <div className="header-title-b">
+              <div className="header-icon">📅</div>
+              <div className="header-text">
                 <h1>Reservas</h1>
                 <p>Gestiona tu horario disponible</p>
               </div>
             </div>
-            <div class="week-navigation-b">
-              <button class="nav-button-b" onClick={handlePreviousWeek}
+            <div className="week-navigation-b">
+              <button className="nav-button-b" onClick={handlePreviousWeek}
                 aria-label="Semana anterior">
                 ← Anterior
               </button>
@@ -354,18 +354,18 @@ function CourtDetailPage() {
                 {format(currentWeekStartDate, 'dd/MM/yyyy')} - {format(addDays(currentWeekStartDate, 6), 'dd/MM/yyyy')}
               </span>
 
-              <button class="nav-button-b"
+              <button className="nav-button-b"
                 onClick={handleNextWeek}
                 aria-label="Semana siguiente">
                 Siguiente →
               </button>
             </div>
-            <div class="legend">
-              <div class="legend-item legend-disponible">                             
+            <div className="legend">
+              <div className="legend-item legend-disponible">                             
                   <Check className="icon-check" />                           
                 <span>Disponible</span>
               </div>
-              <div class="legend-item legend-ocupado">
+              <div className="legend-item legend-ocupado">
                 <Icon iconNode={soccerBall} className="iconsoccer" />
                 <span>Ocupado</span>
               </div>

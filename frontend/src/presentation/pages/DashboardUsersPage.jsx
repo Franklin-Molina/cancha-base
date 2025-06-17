@@ -46,11 +46,11 @@ function DashboardUsersPage() {
       setActionStatus(''); // Limpiar mensajes de acción
       // Obtener usuarios con rol 'cliente'
       const response = await getUserListUseCase.execute({ role: 'cliente' }); // Corregir el nombre del rol
-      console.log("Respuesta completa de usuarios cliente recibida:", response); // Log para depuración
+      //console.log("Respuesta completa de usuarios cliente recibida:", response); // Log para depuración
       // Asumir que la lista de usuarios está en response.results si hay paginación, o response directamente si no
       // Si la respuesta es el objeto de URLs del router, esto no funcionará, pero nos ayudará a depurar
       const users = Array.isArray(response) ? response : response.results || response.users || []; // Intentar acceder a la lista
-      console.log("Lista de usuarios extraída:", users); // Log para depuración
+      //console.log("Lista de usuarios extraída:", users); // Log para depuración
       setClientUsers(users);
       setLoading(false);
     } catch (err) {

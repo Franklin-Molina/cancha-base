@@ -25,8 +25,8 @@ function DashboardBookingsPage() {
             <div className="widget-header">
                 <div className="widget-title">Lista de Reservas</div>
             </div>
-            <div className="widget-content" style={{ padding: '0' }}> {/* Eliminar padding para la tabla */}
-                <table className="recent-orders"> {/* Usar clase de estilo de tabla del dashboard */}
+            <div className="widget-content" > 
+                <table className="recent-orders"> 
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -35,21 +35,19 @@ function DashboardBookingsPage() {
                             <th>Inicio</th>
                             <th>Fin</th>
                             <th>Estado</th>
-                            <th>Pago</th>
-                            {/* TODO: Añadir columna de Acciones (Ver, Editar, Cancelar) */}
+                            <th>Pago</th>                         
                         </tr>
                     </thead>
                     <tbody>
                         {bookings.map(booking => (
-                            <tr key={booking.id}>
-                                <td>{booking.id}</td>
-                                <td>{booking.court}</td> {/* Mostrar ID de cancha por ahora */}
-                                <td>{booking.user}</td> {/* Mostrar ID de usuario por ahora */}
-                                <td>{new Date(booking.start_time).toLocaleString()}</td> {/* Formatear fecha/hora */}
-                                <td>{new Date(booking.end_time).toLocaleString()}</td> {/* Formatear fecha/hora */}
-                                <td>{booking.status}</td>
-                                <td>{booking.payment}</td> {/* Mostrar ID de pago por ahora */}
-                                {/* TODO: Añadir celdas de Acciones */}
+                           <tr key={booking.id}>
+                              <td>{booking.id}</td>
+                              <td>{booking.court}</td>
+                              <td>{booking.user}</td>
+                              <td>{new Date(booking.start_time).toLocaleString()}</td>
+                              <td>{new Date(booking.end_time).toLocaleString()}</td>
+                              <td>{booking.status}</td>
+                              <td>{booking.payment}</td>
                             </tr>
                         ))}
                     </tbody>
