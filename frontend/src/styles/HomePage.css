@@ -1,0 +1,7 @@
+/* Estilos para el contenido principal de la página de inicio */
+.home-content {
+  max-width: 100%; /* Aumenta el ancho máximo para ocupar más espacio */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem; /* p-4 en Tailwind */
+}

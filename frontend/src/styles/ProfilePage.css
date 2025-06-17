@@ -1,0 +1,398 @@
+/* Estilos para la página de perfil */
+.profile-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+   
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+.profile-card, .social-profiles-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #4a89dc; /* Usar color primario del dashboard si está disponible */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.profile-info-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-username {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.profile-role {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #777;
+}
+
+.profile-details {
+    margin-top: 20px;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    width: 120px; /* Ancho fijo para etiquetas */
+    flex-shrink: 0; /* Evitar que la etiqueta se encoja */
+}
+
+.detail-value {
+    color: red;
+    flex-grow: 1; /* Permitir que el valor ocupe el espacio restante */
+}
+
+.card-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.social-profiles-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.social-profile-item {
+    background-color: #f9f9fc;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #555;
+}
+
+.provider-label, .uid-label {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.no-social-profiles {
+    color: #777;
+    font-style: italic;
+}
+
+.logout-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Estilos para el botón de cerrar sesión */
+.logout-section button { /* Apunta al botón dentro de logout-section */
+    background-color: #da4453; /* Usar color de peligro (rojo) */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.logout-section button:hover {
+    background-color: #c43240; /* Un rojo un poco más oscuro al pasar el ratón */
+}
+
+/* Estilos para el formulario de edición de perfil */
+.profile-form {
+    padding: 20px;
+}
+
+.profile-form .form-group {
+    margin-bottom: 15px;
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+    font-size: 15px;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.profile-form .form-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profile-form .form-actions button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* .profile-form .form-actions button[type="submit"] {
+    background-color: green;
+    color: white;
+}
+
+.profile-form .form-actions button[type="submit"]:hover {
+    background-color: #0056b3;
+} */
+
+.profile-form .form-actions button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.profile-form .form-actions button[type="button"]:hover {
+    background-color: #545b62;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.alert.error-alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert.success-alert {
+    background-color: #59c271;
+    color: green;
+    border: 1px solid #c3e6cb;
+}
+
+
+/* Botones perfil */
+.edit-button {
+  width: 100%;
+  padding: 14px;
+/*   background: #ddc910; */
+  background: #e0a830;  
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-sizing: border-box;
+  margin-top: 5px;
+}
+
+.edit-button:hover {
+  background: yellow;
+  transform: translateY(-2px);
+}
+
+.save-button{
+     background-color: green;
+     color: white;
+
+}
+.save-button:hover{
+     background-color: #64c218;
+}
+.exit-button{
+     background-color: rgb(122, 136, 122);
+     color: white;
+
+}
+.exit-button:hover{
+     background-color: #c9be22;
+}
+
+/* Estilos para el botón de cambiar contraseña */
+.change-password-button {
+  width: 100%;
+  padding: 14px;
+  background: #4a89dc; /* Color azul, similar al avatar */
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-sizing: border-box;
+  margin-top: 10px; /* Espacio entre el botón de editar y cambiar contraseña */
+}
+
+.change-password-button:hover {
+  background: #3b73c6; /* Azul más oscuro al pasar el ratón */
+  transform: translateY(-2px);
+}
+
+/* Estilos para el Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegurar que esté por encima de otros elementos */
+}
+
+.modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px; /* Ancho máximo para el modal */
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.modal .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #777;
+    padding: 0;
+}
+
+.modal .close-button:hover {
+    color: #333;
+}
+/*
+.modal-content {
+     Estilos para el contenido del modal si es necesario 
+}
+*/
+.modal .form-group {
+    margin-bottom: 15px;
+}
+
+.modal label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+    font-size: 15px;
+}
+
+.modal input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.modal .form-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end; /* Alinear botones a la derecha */
+    gap: 10px;
+}
+
+.modal .form-actions button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.modal .form-actions .save-button {
+    background-color: #5cb85c; /* Verde para guardar */
+    color: white;
+}
+
+.modal .form-actions .save-button:hover {
+    background-color: #4cae4c;
+}
+
+.modal .form-actions .exit-button {
+    background-color: #f0ad4e; /* Naranja para cancelar */
+    color: white;
+}
+
+.modal .form-actions .exit-button:hover {
+    background-color: #ec971f;
+}
+
+/* Estilos para las alertas dentro del modal */
+.modal .alert {
+    margin-bottom: 15px; /* Espacio debajo de la alerta */
+}
