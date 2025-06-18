@@ -5,8 +5,9 @@ import useButtonDisable from './useButtonDisable.js'; // Importar el hook person
 
 // Importar el caso de uso y la implementación del repositorio
 import { ApiBookingRepository } from '../../infrastructure/repositories/api-booking-repository';
-import { CreateBookingUseCase } from '../../application/use-cases/create-booking';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository';
+import { CreateBookingUseCase } from '../../application/use-cases/bookings/create-booking';
+import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para inyectar en caso de uso
+import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id';
 
 /**
  * Hook personalizado para la lógica de la página de reserva de canchas.
@@ -40,10 +41,11 @@ export const useBookingForm = () => {
   const [error, setError] = useState(null);
   const [bookingError, setBookingError] = useState(null);
 
-  // Crear instancias del repositorio y caso de uso
+  // Crear instancias del repositorio y casos de uso
   const bookingRepository = new ApiBookingRepository();
   const createBookingUseCase = new CreateBookingUseCase(bookingRepository);
-  const courtRepository = new ApiCourtRepository();
+  const courtRepository = new ApiCourtRepository(); // Se mantiene para inyectar en caso de uso
+  const getCourtByIdUseCase = new GetCourtByIdUseCase(courtRepository);
 
   // Redirigir si no está autenticado
   useEffect(() => {
@@ -56,7 +58,7 @@ export const useBookingForm = () => {
   useEffect(() => {
     const fetchCourt = async () => {
       try {
-        const courtDetails = await courtRepository.getCourtById(courtId);
+        const courtDetails = await getCourtByIdUseCase.execute(courtId); // Usar el caso de uso
         setCourt(courtDetails);
         setLoading(false);
       } catch (err) {
@@ -71,7 +73,7 @@ export const useBookingForm = () => {
       setError(new Error("ID de cancha no proporcionado."));
       setLoading(false);
     }
-  }, [courtId, courtRepository]);
+  }, [courtId, getCourtByIdUseCase]); // Dependencia actualizada
 
   // Usar el hook para el envío del formulario
   const [isSubmitting, handleSubmit] = useButtonDisable(async (e) => {

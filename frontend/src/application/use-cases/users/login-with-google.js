@@ -1,5 +1,5 @@
-import { IAuthRepository } from '../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
-import { AuthTokens } from '../../domain/entities/auth'; // Importar la entidad AuthTokens
+import { IAuthRepository } from '../../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
+import { AuthTokens } from '../../../domain/entities/auth'; // Importar la entidad AuthTokens
 
 /**
  * Caso de uso para iniciar sesión con Google.

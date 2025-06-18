@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository';
 import { useNavigate } from 'react-router-dom';
 import useButtonDisable from '../hooks/useButtonDisable.js';
+import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
+import { GetCourtsUseCase } from '../../application/use-cases/courts/get-courts.js'; // Importar el caso de uso
 
 /**
  * Hook personalizado para la lógica de la página de gestión de canchas.
@@ -36,12 +37,14 @@ export const useManageCourtsLogic = () => {
   const [courtToDelete, setCourtToDelete] = useState(null);
   const hasFetchedCourts = useRef(false);
 
-  const courtRepository = new ApiCourtRepository();
+  // Instanciar repositorio y casos de uso
+  const courtRepository = new ApiCourtRepository(); // Se mantiene para operaciones directas del repo
+  const getCourtsUseCase = new GetCourtsUseCase(courtRepository);
 
   const fetchCourts = async () => {
     try {
       setLoading(true);
-      const courtsData = await courtRepository.getCourts();
+      const courtsData = await getCourtsUseCase.execute(); // Usar el caso de uso
       setCourts(courtsData);
       setLoading(false);
     } catch (error) {

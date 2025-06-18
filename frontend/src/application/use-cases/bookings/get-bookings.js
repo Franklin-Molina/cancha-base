@@ -1,5 +1,5 @@
-import { IBookingRepository } from '../../domain/repositories/booking-repository'; // Importar la interfaz del repositorio
-import { Booking } from '../../domain/entities/booking'; // Importar la entidad Booking
+import { IBookingRepository } from '../../../domain/repositories/booking-repository'; // Importar la interfaz del repositorio
+import { Booking } from '../../../domain/entities/booking'; // Importar la entidad Booking
 
 /**
  * Caso de uso para obtener la lista de reservas.

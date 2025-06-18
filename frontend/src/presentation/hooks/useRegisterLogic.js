@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useButtonDisable from '../hooks/useButtonDisable.js';
 
 // Importar el caso de uso y el repositorio
-import { RegisterUserUseCase } from '../../application/use-cases/register-user.js';
+import { RegisterUserUseCase } from '../../application/use-cases/users/register-user.js';
 import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
 
 /**

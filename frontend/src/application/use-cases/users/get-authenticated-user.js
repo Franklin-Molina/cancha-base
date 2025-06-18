@@ -1,5 +1,5 @@
-import { IAuthRepository } from '../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
-import { AuthenticatedUser } from '../../domain/entities/auth'; // Importar la entidad AuthenticatedUser
+import { IAuthRepository } from '../../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
+import { AuthenticatedUser } from '../../../domain/entities/auth'; // Importar la entidad AuthenticatedUser
 
 /**
  * Caso de uso para obtener la información del usuario autenticado.

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-import { UpdateUserProfileUseCase } from '../../application/use-cases/update-user-profile.js';
-import { ChangePasswordUseCase } from '../../application/use-cases/change-password.js';
+import { UpdateUserProfileUseCase } from '../../application/use-cases/users/update-user-profile.js';
+import { ChangePasswordUseCase } from '../../application/use-cases/users/change-password.js';
 import useButtonDisable from '../hooks/useButtonDisable.js';
 
 /**

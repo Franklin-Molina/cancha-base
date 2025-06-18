@@ -1,4 +1,4 @@
-import { IAuthRepository } from '../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
+import { IAuthRepository } from '../../../domain/repositories/auth-repository'; // Importar la interfaz del repositorio
 
 /**
  * Caso de uso para cerrar la sesión del usuario.

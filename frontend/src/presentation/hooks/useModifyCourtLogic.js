@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository';
 import useButtonDisable from '../hooks/useButtonDisable.js';
+import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para inyectar en casos de uso
+import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id.js';
+import { UpdateCourtUseCase } from '../../application/use-cases/courts/update-court.js';
 
 /**
  * Hook personalizado para la lógica de la página de modificación de canchas.
@@ -21,7 +23,11 @@ import useButtonDisable from '../hooks/useButtonDisable.js';
 export const useModifyCourtLogic = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // Instanciar repositorio y casos de uso
   const courtRepository = useMemo(() => new ApiCourtRepository(), []);
+  const getCourtByIdUseCase = useMemo(() => new GetCourtByIdUseCase(courtRepository), [courtRepository]);
+  const updateCourtUseCase = useMemo(() => new UpdateCourtUseCase(courtRepository), [courtRepository]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -39,7 +45,7 @@ export const useModifyCourtLogic = () => {
     const fetchCourt = async () => {
       try {
         setLoading(true);
-        const courtData = await courtRepository.getCourtById(id);
+        const courtData = await getCourtByIdUseCase.execute(id); // Usar el caso de uso
         setFormData({
           name: courtData.name || '',
           price: courtData.price || '',
@@ -62,7 +68,7 @@ export const useModifyCourtLogic = () => {
       setError(new Error("No se proporcionó ID de cancha."));
       setLoading(false);
     }
-  }, [id, courtRepository]);
+  }, [id, getCourtByIdUseCase]); // Dependencia actualizada
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -116,7 +122,7 @@ export const useModifyCourtLogic = () => {
     }
 
     try {
-      await courtRepository.updateCourt(id, data);
+      await updateCourtUseCase.execute(id, data); // Usar el caso de uso
       setActionStatus('Cancha actualizada exitosamente.');
       setTimeout(() => {
         setActionStatus('');

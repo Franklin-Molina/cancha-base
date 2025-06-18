@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { GetCourtsUseCase } from '../../application/use-cases/get-courts.js';
+import { GetCourtsUseCase } from '../../application/use-cases/courts/get-courts.js';
 import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository.js';
 
 /**

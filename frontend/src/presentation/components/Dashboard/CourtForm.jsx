@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // Importar estilos si es necesario, o usar clases de dashboard.css
 
 // Importar el caso de uso y la implementación del repositorio
-import { CreateCourtUseCase } from '../../../application/use-cases/create-court';
+import { CreateCourtUseCase } from '../../../application/use-cases/courts/create-court';
 import { ApiCourtRepository } from '../../../infrastructure/repositories/api-court-repository';
 import useButtonDisable from '../../hooks/useButtonDisable.js'; // Importar el hook personalizado
 

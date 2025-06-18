@@ -1,5 +1,5 @@
-import { ICourtRepository } from '../../domain/repositories/court-repository'; // Importar la interfaz del repositorio
-import { Court } from '../../domain/entities/court'; // Importar la entidad Court
+import { ICourtRepository } from '../../../domain/repositories/court-repository'; // Importar la interfaz del repositorio
+import { Court } from '../../../domain/entities/court'; // Importar la entidad Court
 
 /**
  * Caso de uso para obtener los detalles de una cancha específica por su ID.

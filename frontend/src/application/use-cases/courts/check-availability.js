@@ -1,4 +1,4 @@
-import { ICourtRepository } from '../../domain/repositories/court-repository'; // Importar la interfaz del repositorio
+import { ICourtRepository } from '../../../domain/repositories/court-repository'; // Importar la interfaz del repositorio
 
 /**
  * Caso de uso para verificar la disponibilidad de canchas.

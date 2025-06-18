@@ -1,4 +1,4 @@
-import { IUserRepository } from '../../domain/repositories/user-repository.js';
+import { IUserRepository } from '../../../domain/repositories/user-repository.js';
 
 /**
  * Caso de uso para eliminar un usuario en el frontend.

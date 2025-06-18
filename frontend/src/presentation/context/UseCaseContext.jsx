@@ -1,12 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import { useRepositories } from './RepositoryContext';
-import { GetBookingsUseCase } from '../../application/use-cases/get-bookings';
-import { GetUserListUseCase } from '../../application/use-cases/get-user-list';
-import { DeleteUserUseCase } from '../../application/use-cases/delete-user';
-import { GetCourtByIdUseCase } from '../../application/use-cases/get-court-by-id';
-import { CheckAvailabilityUseCase } from '../../application/use-cases/check-availability';
-import { GetWeeklyAvailabilityUseCase } from '../../application/use-cases/get-weekly-availability';
-import { CreateBookingUseCase } from '../../application/use-cases/create-booking';
+import { GetBookingsUseCase } from '../../application/use-cases/bookings/get-bookings';
+import { CreateBookingUseCase } from '../../application/use-cases/bookings/create-booking';
+import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list';
+import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user';
+import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id';
+import { CheckAvailabilityUseCase } from '../../application/use-cases/courts/check-availability';
+import { GetWeeklyAvailabilityUseCase } from '../../application/use-cases/courts/get-weekly-availability';
 // Importar otros casos de uso aquí si es necesario
 
 // Crear el contexto para los casos de uso

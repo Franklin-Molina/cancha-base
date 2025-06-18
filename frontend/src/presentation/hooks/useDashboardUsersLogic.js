@@ -3,9 +3,9 @@ import { useAuth } from '../context/AuthContext.jsx';
 import useButtonDisable from '../hooks/useButtonDisable.js';
 
 // Casos de uso y repositorios
-import { GetUserListUseCase } from '../../application/use-cases/get-user-list.js';
+import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list.js';
 import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-import { DeleteUserUseCase } from '../../application/use-cases/delete-user.js';
+import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user.js';
 
 /**
  * Hook personalizado para la lógica de la página de gestión de usuarios cliente.

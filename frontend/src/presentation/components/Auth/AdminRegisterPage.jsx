@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { CreateAdminUserUseCase } from '../../../application/use-cases/create-admin-user.js'; // Importar el caso de uso
+import { CreateAdminUserUseCase } from '../../../application/use-cases/users/create-admin-user.js'; // Importar el caso de uso
 import { ApiUserRepository } from '../../../infrastructure/repositories/api-user-repository.js'; // Importar el repositorio
 // import api from '../../../infrastructure/api/api.js'; // Mantener la importación de api si se usa en otro lugar, si no, eliminar
 import '../../../styles/AdminRegisterPage.css'; // Importar los estilos específicos de este componente desde la nueva ubicación

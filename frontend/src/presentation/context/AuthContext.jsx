@@ -3,10 +3,10 @@ import { useNavigate, Navigate } from 'react-router-dom'; // Importar useNavigat
 
 // Importar los casos de uso y la implementación del repositorio
 import { ApiAuthRepository } from '../../infrastructure/repositories/api-auth-repository.js';
-import { LoginUserUseCase } from '../../application/use-cases/login-user.js';
-import { LogoutUserUseCase } from '../../application/use-cases/logout-user.js';
-import { GetAuthenticatedUserUseCase } from '../../application/use-cases/get-authenticated-user.js';
-import { LoginWithGoogleUseCase } from '../../application/use-cases/login-with-google.js';
+import { LoginUserUseCase } from '../../application/use-cases/users/login-user.js';
+import { LogoutUserUseCase } from '../../application/use-cases/users/logout-user.js';
+import { GetAuthenticatedUserUseCase } from '../../application/use-cases/users/get-authenticated-user.js';
+import { LoginWithGoogleUseCase } from '../../application/use-cases/users/login-with-google.js';
 
 // Crear el contexto de autenticación
 const AuthContext = createContext(null);
