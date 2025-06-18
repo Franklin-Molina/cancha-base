@@ -111,12 +111,12 @@ function DashboardLayout() {
             <span>Usuarios</span>
           </Link>
 
-          <Link to="/dashboard/pagos" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
+          <Link to="#" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
             <i className="fas fa-dollar-sign"></i>
             <span>Pagos</span>
           </Link>
 
-          <Link to="/dashboard/estadisticas" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
+          <Link to="#" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
             <i className="fas fa-chart-line"></i>
             <span>Estadísticas</span>
           </Link>

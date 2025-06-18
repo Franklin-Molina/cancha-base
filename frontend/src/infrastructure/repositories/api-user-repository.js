@@ -152,4 +152,19 @@ export class ApiUserRepository extends IUserRepository {
       throw error;
     }
   }
+
+  /**
+   * Registra un nuevo usuario general.
+   * @param {object} userData - Datos del usuario a registrar (username, email, password, first_name, last_name, age).
+   * @returns {Promise<object>} Una promesa que resuelve con los datos del usuario registrado.
+   */
+  async registerUser(userData) {
+    try {
+      const response = await api.post('/api/users/register/', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Error al registrar usuario via API:', error);
+      throw error;
+    }
+  }
 }

@@ -1,30 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx'; // Usar el hook personalizado
+import React from 'react';
+import { useLoginLogic } from '../hooks/useLoginLogic.js'; // Importar el nuevo hook
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { login } = useAuth(); // Usar el hook en lugar del contexto directamente
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    try {
-      await login(username, password);
-      // La redirección ya se maneja dentro de fetchUser del contexto
-    } catch (err) {
-      console.error('Error en el inicio de sesión:', err);
-      if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
-      } else {
-        setError('Error en el inicio de sesión. Inténtalo de nuevo.');
-      }
-    }
-  };
+  // Usar el hook personalizado para la lógica de la página de login
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    error,
+    handleSubmit,
+  } = useLoginLogic();
 
   return (
     <div>

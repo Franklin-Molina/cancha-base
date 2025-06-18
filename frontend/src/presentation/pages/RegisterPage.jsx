@@ -1,83 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Importar axios
-import '../styles/RegisterPage.css'; // Importar estilos de la página de registro
-import useButtonDisable from '../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import React from 'react';
+import '../styles/RegisterPage.css';
+import { useRegisterLogic } from '../hooks/useRegisterLogic.js'; // Importar el nuevo hook
 
 function RegisterPage() {
-  useEffect(() => {
-    // Agregar clase al body cuando el componente se monta
-    document.body.classList.add('no-scroll');
-
-    // Limpiar: eliminar clase del body cuando el componente se desmonta
-    return () => {
-      document.body.classList.remove('no-scroll');
-    };
-  }, []); // El array vacío asegura que el efecto se ejecute solo una vez al montar y desmontar
-
-  const [username, setUsername] = useState(''); // Estado para el nombre de usuario
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState(''); // Estado para el nombre
-  const [lastName, setLastName] = useState(''); // Estado para el apellido
-  const [age, setAge] = useState(''); // Estado para la edad
-  const [error, setError] = useState(''); // Estado para manejar errores
-  const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  // Usar el hook personalizado para manejar el estado de deshabilitación del botón
-  const [isSubmitting, handleFormSubmit] = useButtonDisable(async (e) => {
-    e.preventDefault();
-    setError(''); // Limpiar errores previos
-
-    // Validar que las contraseñas coincidan
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      return;
-    }
-
-    // Validar que todos los campos requeridos estén llenos
-    if (!username || !email || !password || !confirmPassword || !firstName || !lastName || !age) {
-      setError('Por favor completa todos los campos.');
-      return;
-    }
-
-
-    // Validar que las contraseñas coincidan
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      return;
-    }
-
-    // Validar que todos los campos requeridos estén llenos
-    if (!username || !email || !password || !confirmPassword || !firstName || !lastName || !age) {
-      setError('Por favor completa todos los campos.');
-      return;
-    }
-
-    try {
-      // Realizar la llamada a la API de backend para registrar al usuario
-      const response = await axios.post(`${API_URL}/api/users/register/`, { // Usar la URL correcta del endpoint de registro
-        username, // Incluir nombre de usuario
-        email,
-        password,
-        first_name: firstName, // Incluir nombre
-        last_name: lastName, // Incluir apellido
-        age: age, // Incluir edad
-      });
-
-      console.log('Registro exitoso:', response.data);
-      // Después de un registro exitoso, redirigir al usuario a la página de login
-      navigate('/login');
-
-    } catch (err) {
-      console.error('Error en el registro:', err.response ? err.response.data : err.message);
-      // Mostrar mensaje de error al usuario
-      setError(err.response && err.response.data ? JSON.stringify(err.response.data) : 'Error en el registro');
-      throw err; // Re-lanzar el error para que el hook lo capture y no deshabilite el botón si se desea
-    }
-  });
+  // Usar el hook personalizado para toda la lógica de la página de registro
+  const {
+    username,
+    setUsername,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    age,
+    setAge,
+    error,
+    isSubmitting,
+    handleFormSubmit,
+  } = useRegisterLogic();
 
   return (
     <div className="register-container"> {/* Usar la clase register-container */}

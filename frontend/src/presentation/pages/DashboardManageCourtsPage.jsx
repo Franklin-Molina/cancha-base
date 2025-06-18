@@ -1,124 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Importar ApiCourtRepository
+import React from 'react';
 import CourtActionsModal from '../components/Dashboard/CourtActionsModal.jsx';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import '../../styles/DashboardCanchaTable.css';
 import Spinner from '../components/common/Spinner.jsx';
-import useButtonDisable from '../hooks/useButtonDisable.js'; // Importar el hook personalizado
-
-
+import { useManageCourtsLogic } from '../hooks/useManageCourtsLogic.js'; // Importar el nuevo hook
 
 function DashboardManageCourtsPage() {
-  const navigate = useNavigate(); // Inicializar useNavigate
-  const [courts, setCourts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState('');
-  const [selectedCourt, setSelectedCourt] = useState(null);
-  const [courtToDelete, setCourtToDelete] = useState(null); // Estado para la cancha a eliminar
-  const hasFetchedCourts = useRef(false); // Ref para asegurar que fetchCourts se llame solo una vez
-  // Eliminar estado courtToModify
-
-
-  const courtRepository = new ApiCourtRepository();
-
-  useEffect(() => {
-    const fetchCourts = async () => {
-      try {
-        setLoading(true);
-        const courtsData = await courtRepository.getCourts();
-        setCourts(courtsData);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    // Solo llamar a fetchCourts si no se ha llamado antes
-    if (!hasFetchedCourts.current) {
-      fetchCourts();
-      hasFetchedCourts.current = true;
-    }
-  }, [courtRepository]); // Añadir courtRepository a las dependencias
-
-  // Usar el hook para suspender cancha
-  const [isSuspending, handleSuspendCourtClick] = useButtonDisable(async (courtId) => {
-    try {
-      setActionStatus('Suspendiendo cancha...');
-      await courtRepository.updateCourtStatus(courtId, false);
-      setCourts(prevCourts =>
-        prevCourts.map(c => c.id === courtId ? { ...c, is_active: false } : c)
-      );
-      setActionStatus('Cancha suspendida exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
-    } catch (error) {
-      console.error(`Error suspending court ${courtId}:`, error);
-      setActionStatus(`Error al suspender cancha: ${error.message}`);
-      throw error;
-    }
-  });
-
-  // Usar el hook para reactivar cancha
-  const [isReactivating, handleReactivateCourtClick] = useButtonDisable(async (courtId) => {
-    try {
-      setActionStatus('Reactivando cancha...');
-      await courtRepository.updateCourtStatus(courtId, true);
-      setCourts(prevCourts =>
-        prevCourts.map(c => c.id === courtId ? { ...c, is_active: true } : c)
-      );
-      setActionStatus('Cancha reactivada exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
-    } catch (error) {
-      console.error(`Error reactivating court ${courtId}:`, error);
-      setActionStatus(`Error al reactivar cancha: ${error.message}`);
-      throw error;
-    }
-  });
-
-  const handleDeleteRequest = (court) => {
-    setCourtToDelete(court); // Establecer la cancha a eliminar para mostrar el modal de confirmación
-    handleCloseModal(); // Cerrar el modal de acciones
-  };
-
-  // Usar el hook para confirmar eliminación
-  const [isDeleting, handleConfirmDeleteClick] = useButtonDisable(async () => {
-    if (!courtToDelete) return;
-
-    try {
-      setActionStatus(`Eliminando cancha ${courtToDelete.name}...`);
-      await courtRepository.deleteCourt(courtToDelete.id);
-      setCourts(prevCourts => prevCourts.filter(c => c.id !== courtToDelete.id));
-      setActionStatus(`Cancha ${courtToDelete.name} eliminada exitosamente.`);
-      setTimeout(() => setActionStatus(''), 3000);
-    } catch (error) {
-      console.error(`Error al eliminar la cancha ${courtToDelete.id}:`, error);
-      setActionStatus(`Error al eliminar cancha ${courtToDelete.name}: ${error.message}`);
-      throw error;
-    } finally {
-      setCourtToDelete(null); // Cerrar el modal de confirmación
-    }
-  });
-
-  const handleCancelDelete = () => {
-    setCourtToDelete(null); // Cerrar el modal de confirmación sin eliminar
-  };
-
-  const handleModifyRequest = (court) => {
-    handleCloseModal(); // Cerrar el modal de acciones
-    navigate(`/dashboard/manage-courts/${court.id}`); // Navegar a la nueva página de modificación
-  };
-
-  // Eliminar funciones handleUpdateCourt y handleCancelModify
-
-
-  const handleOpenModal = (court) => {
-    setSelectedCourt(court);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedCourt(null);
-  };
+  // Usar el hook personalizado para toda la lógica de la página
+  const {
+    courts,
+    loading,
+    error,
+    actionStatus,
+    selectedCourt,
+    courtToDelete,
+    isSuspending,
+    isReactivating,
+    isDeleting,
+    handleSuspendCourtClick,
+    handleReactivateCourtClick,
+    handleDeleteRequest,
+    handleConfirmDeleteClick,
+    handleCancelDelete,
+    handleModifyRequest,
+    handleOpenModal,
+    handleCloseModal,
+  } = useManageCourtsLogic();
 
   if (loading) {
     return <Spinner />; 

@@ -1,152 +1,36 @@
-import React, { useEffect, useState, useMemo } from 'react'; // Importar useMemo
-import { useAuth } from '../context/AuthContext.jsx'; // Corregir la ruta de importación
+import React from 'react';
+import { useAuth } from '../context/AuthContext.jsx';
 import Spinner from '../components/common/Spinner.jsx';
-import useButtonDisable from '../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import { useDashboardUsersLogic } from '../hooks/useDashboardUsersLogic.js'; // Importar el nuevo hook
 
-// Casos de uso y repositorios
-import { GetUserListUseCase } from '../../application/use-cases/get-user-list.js';
-// Importar ApiUserRepository directamente para usar updateClientUserStatus
-import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-import { DeleteUserUseCase } from '../../application/use-cases/delete-user.js';
-// Ya no necesitamos importar UpdateUserStatusUseCase si llamamos al repositorio directamente
-// import { UpdateUserStatusUseCase } from '../../application/use-cases/update-user-status.js';
-
-import '../../styles/dashboard.css'; // Estilos generales del dashboard
-//import '../../styles/AdminGlobalDashboard.css'; // Importar estilos de AdminGlobalDashboard para la tabla
+import '../../styles/dashboard.css';
 import '../../styles/DashboardUserTable.css';
+
 function DashboardUsersPage() {
-  const { user } = useAuth();
-  const [clientUsers, setClientUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState(''); // Estado para mensajes de acción
+  // Usar el hook personalizado para toda la lógica de la página
+  const {
+    clientUsers,
+    loading,
+    error,
+    actionStatus,
+    showDeleteModal,
+    userToDelete,
+    showDetailsModal,
+    userDetails,
+    isSuspending,
+    isReactivating,
+    isDeleting,
+    fetchClientUsers,
+    handleSuspendUserClick,
+    handleReactivateUserClick,
+    confirmDelete,
+    cancelDelete,
+    proceedDeleteClick,
+    handleViewDetails,
+    handleCloseDetailsModal,
+  } = useDashboardUsersLogic();
 
-  // Estado para controlar la visibilidad del modal de confirmación
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  // Estado para almacenar la información del usuario a eliminar
-  const [userToDelete, setUserToDelete] = useState(null);
-
-  // Estado para controlar la visibilidad del modal de detalles
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  // Estado para almacenar la información del usuario a mostrar en el modal de detalles
-  const [userDetails, setUserDetails] = useState(null);
-
-
-  // Instanciar repositorio y casos de uso usando useMemo para asegurar estabilidad
-  const userRepository = useMemo(() => new ApiUserRepository(), []);
-  const getUserListUseCase = useMemo(() => new GetUserListUseCase(userRepository), [userRepository]);
-  const deleteUserUseCase = useMemo(() => new DeleteUserUseCase(userRepository), [userRepository]);
-  // Ya no necesitamos instanciar UpdateUserStatusUseCase
-  // const updateUserStatusUseCase = useMemo(() => new UpdateUserStatusUseCase(userRepository), [userRepository]);
-
-  const fetchClientUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setActionStatus(''); // Limpiar mensajes de acción
-      // Obtener usuarios con rol 'cliente'
-      const response = await getUserListUseCase.execute({ role: 'cliente' }); // Corregir el nombre del rol
-      //console.log("Respuesta completa de usuarios cliente recibida:", response); // Log para depuración
-      // Asumir que la lista de usuarios está en response.results si hay paginación, o response directamente si no
-      // Si la respuesta es el objeto de URLs del router, esto no funcionará, pero nos ayudará a depurar
-      const users = Array.isArray(response) ? response : response.results || response.users || []; // Intentar acceder a la lista
-      //console.log("Lista de usuarios extraída:", users); // Log para depuración
-      setClientUsers(users);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching client users:", err);
-      setError(err);
-      setClientUsers([]);
-      setLoading(false);
-      setActionStatus('Error al cargar usuarios.');
-    }
-  };
-
-  useEffect(() => {
-    // Solo cargar datos si el usuario está autenticado (y es admin, aunque la ruta debería estar protegida)
-    if (user) {
-      fetchClientUsers();
-    } else {
-      setLoading(false);
-    }
-  }, [user, getUserListUseCase]); // Dependencia del usuario del contexto y del caso de uso
-
-  // Usar el hook para suspender usuario
-  const [isSuspending, handleSuspendUserClick] = useButtonDisable(async (userId) => {
-    try {
-      setActionStatus('Suspendiendo usuario...');
-      await userRepository.updateClientUserStatus(userId, false);
-      setClientUsers(prevUsers =>
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: false } : u)
-      );
-      setActionStatus('Usuario suspendido exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
-    } catch (err) {
-      console.error(`Error suspending user ${userId}:`, err);
-      setActionStatus(`Error al suspender usuario: ${err.message}`);
-      throw err;
-    }
-  });
-
-  // Usar el hook para reactivar usuario
-  const [isReactivating, handleReactivateUserClick] = useButtonDisable(async (userId) => {
-    try {
-      setActionStatus('Reactivando usuario...');
-      await userRepository.updateClientUserStatus(userId, true);
-      setClientUsers(prevUsers =>
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: true } : u)
-      );
-      setActionStatus('Usuario reactivado exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
-    } catch (err) {
-      console.error(`Error reactivating user ${userId}:`, err);
-      setActionStatus(`Error al reactivar usuario: ${err.message}`);
-      throw err;
-    }
-  });
-
-  // Función para abrir el modal de confirmación
-  const confirmDelete = (user) => {
-    setUserToDelete(user);
-    setShowDeleteModal(true);
-  };
-
-  // Función para cerrar el modal de confirmación
-  const cancelDelete = () => {
-    setUserToDelete(null);
-    setShowDeleteModal(false);
-  };
-
-  // Usar el hook para manejar la eliminación después de la confirmación
-  const [isDeleting, proceedDeleteClick] = useButtonDisable(async () => {
-    if (userToDelete) {
-      try {
-        setActionStatus('Eliminando usuario...');
-        await deleteUserUseCase.execute(userToDelete.id);
-        setClientUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
-        setActionStatus('Usuario eliminado exitosamente.');
-        setTimeout(() => setActionStatus(''), 3000);
-      } catch (err) {
-        console.error(`Error deleting user ${userToDelete.id}:`, err);
-        setActionStatus(`Error al eliminar usuario: ${err.message}`);
-        throw err;
-      } finally {
-        cancelDelete();
-      }
-    }
-  });
-
-  // Función para abrir el modal de detalles
-  const handleViewDetails = (user) => {
-    setUserDetails(user);
-    setShowDetailsModal(true);
-  };
-
-  // Función para cerrar el modal de detalles
-  const handleCloseDetailsModal = () => {
-    setUserDetails(null);
-    setShowDetailsModal(false);
-  };
+  const { user } = useAuth(); // Mantener useAuth para verificar el rol del usuario si es necesario en el JSX
 
 
   if (loading) {

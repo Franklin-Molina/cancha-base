@@ -1,131 +1,22 @@
-import React, { useState, useEffect, useMemo } from 'react'; // Importar useMemo
-import { useParams, useNavigate } from 'react-router-dom'; // Necesario para obtener el ID de la URL y navegar
-import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Necesario para obtener y actualizar la cancha
-import '../../styles/dashboard.css'; // Usar estilos generales del dashboard
-import '../../styles/DashboardCanchaTable.css'; // Mantener estilos de formulario si son necesarios
+import React from 'react';
+import '../../styles/dashboard.css';
+import '../../styles/DashboardCanchaTable.css';
 import Spinner from '../components/common/Spinner';
-import useButtonDisable from '../hooks/useButtonDisable.js'; // Importar el hook personalizado
+import { useModifyCourtLogic } from '../hooks/useModifyCourtLogic.js'; // Importar el nuevo hook
 
 function DashboardModifyCourtPage() {
-  const { id } = useParams(); // Obtener el ID de la cancha de la URL
-  const navigate = useNavigate(); // Hook para navegar
-  const courtRepository = useMemo(() => new ApiCourtRepository(), []); // Usar useMemo para estabilidad
-
-  const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    is_active: true,
-    characteristics: '',
-    images: [], // Estado para las imágenes existentes y nuevas
-    imagesToDelete: [], // Estado para IDs de imágenes a eliminar
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState('');
-
-  useEffect(() => {
-    const fetchCourt = async () => {
-      try {
-        setLoading(true);
-        const courtData = await courtRepository.getCourtById(id); // Obtener detalles de la cancha por ID
-        console.log("courtData:", courtData); // Agregar console.log para inspeccionar los datos
-        setFormData({
-          name: courtData.name || '',
-          price: courtData.price || '',
-          is_active: courtData.is_active !== undefined ? courtData.is_active : true,
-          characteristics: courtData.characteristics || '',
-          images: courtData.images || [], // Cargar imágenes existentes
-          imagesToDelete: [],
-        });
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-        setActionStatus(`Error al cargar la cancha: ${error.message}`);
-      }
-    };
-
-    if (id) {
-      fetchCourt();
-    } else {
-      setError(new Error("No se proporcionó ID de cancha."));
-      setLoading(false);
-    }
-  }, [id, courtRepository]); // Dependencia en el ID de la URL y courtRepository
-
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (name === 'images') {
-      // Agregar nuevas imágenes al estado
-      setFormData(prevState => ({
-        ...prevState,
-        images: [...prevState.images, ...Array.from(files)],
-      }));
-    } else {
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: type === 'checkbox' ? checked : value
-      }));
-    }
-  };
-
-  const handleRemoveImage = (indexToRemove) => {
-    // Marcar imagen existente para eliminar o remover imagen nueva del estado
-    const imageToRemove = formData.images[indexToRemove];
-    if (imageToRemove.id) { // Si la imagen tiene ID, es una imagen existente
-      setFormData(prevState => ({
-        ...prevState,
-        images: prevState.images.filter((_, index) => index !== indexToRemove),
-        imagesToDelete: [...prevState.imagesToDelete, imageToRemove.id],
-      }));
-    } else { // Si no tiene ID, es una imagen nueva que aún no se ha subido
-      setFormData(prevState => ({
-        ...prevState,
-        images: prevState.images.filter((_, index) => index !== indexToRemove),
-      }));
-    }
-  };
-
-  // Usar el hook para el envío del formulario
-  const [isSubmitting, handleSubmit] = useButtonDisable(async (e) => {
-    e.preventDefault();
-    setActionStatus('Guardando cambios...');
-
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('price', formData.price);
-    data.append('is_active', formData.is_active);
-    if (formData.characteristics) data.append('characteristics', formData.characteristics);
-
-    // Añadir nuevas imágenes al FormData
-    formData.images.forEach(image => {
-      if (!image.id) { // Solo añadir imágenes que no tienen ID (son nuevas)
-        data.append('images', image); // Usar el mismo nombre 'images' para todos los archivos
-      }
-    });
-
-    // Añadir IDs de imágenes a eliminar
-    if (formData.imagesToDelete.length > 0) {
-       // Dependiendo de cómo el backend maneje la eliminación de imágenes,
-       // podríamos necesitar enviar una lista de IDs a eliminar.
-       // Asumiremos que el backend espera un campo 'images_to_delete' con una lista de IDs.
-       data.append('images_to_delete', JSON.stringify(formData.imagesToDelete));
-    }
-
-    try {
-      // Usar updateCourt que debe soportar FormData y eliminación de imágenes
-      await courtRepository.updateCourt(id, data);
-      setActionStatus('Cancha actualizada exitosamente.');
-      setTimeout(() => {
-        setActionStatus('');
-        navigate('/dashboard/canchas/manage'); // Navegar de regreso a la lista después de guardar
-      }, 2000);
-    } catch (error) {
-      console.error(`Error al actualizar la cancha ${id}:`, error);
-      setActionStatus(`Error al actualizar cancha: ${error.message}`);
-      throw error; // Re-lanzar el error para que el hook lo capture
-    }
-  });
+  // Usar el hook personalizado para toda la lógica de la página
+  const {
+    formData,
+    loading,
+    error,
+    actionStatus,
+    isSubmitting,
+    handleChange,
+    handleRemoveImage,
+    handleSubmit,
+    navigate,
+  } = useModifyCourtLogic();
 
   if (loading) {
     return <Spinner />; 

@@ -1,213 +1,46 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Importar useNavigate
+import React from 'react';
 import '../../styles/HomePage.css';
 import '../../styles/dashboard.css';
 import '../../styles/CourtDetailPage.css';
 import Spinner from '../components/common/Spinner';
-import Modal from '../components/common/Modal'; // Importar el componente Modal
-import { format, startOfWeek, addDays, setHours, setMinutes } from 'date-fns';
-import useButtonDisable from '../hooks/useButtonDisable.js';
+import Modal from '../components/common/Modal';
 import WeeklyAvailabilityCalendar from '../pages/WeeklyAvailabilityCalendar.jsx';
 import { Check, Icon } from 'lucide-react';
 import { soccerBall } from '@lucide/lab';
+import { format, addDays } from 'date-fns'; // Mantener format y añadir addDays para el JSX
 
-// Importar los casos de uso y la implementación del repositorio
-import { useRepositories } from '../context/RepositoryContext';
-import { useUseCases } from '../context/UseCaseContext';
+// Importar el nuevo hook personalizado
+import { useCourtDetailLogic } from '../hooks/useCourtDetailLogic.js';
 
 function CourtDetailPage() {
-  const { courtId } = useParams();
-  const navigate = useNavigate(); // Inicializar useNavigate
-  const [court, setCourt] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  // Obtener repositorios y casos de uso del contexto
-  const { courtRepository, bookingRepository } = useRepositories();
-  const { getCourtByIdUseCase, checkAvailabilityUseCase, getWeeklyAvailabilityUseCase, createBookingUseCase } = useUseCases();
-
-  // Estados para manejar la creación de reserva desde el calendario
-  const [isBooking, setIsBooking] = useState(false);
-  const [bookingError, setBookingError] = useState(null);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false); // Nuevo estado para el modal de login
-
-  // Estados para el modal de confirmación de reserva
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [bookingDetailsToConfirm, setBookingDetailsToConfirm] = useState(null);
-
-  // Estado para los datos de disponibilidad semanal del calendario
-  const [weeklyAvailability, setWeeklyAvailability] = useState({});
-  const [loadingWeeklyAvailability, setLoadingWeeklyAvailability] = useState(false);
-  const [weeklyAvailabilityError, setWeeklyAvailabilityError] = useState(null);
-  const [currentWeekStartDate, setCurrentWeekStartDate] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
-
-  // Función para obtener los detalles de la cancha usando el caso de uso
-  const fetchCourtDetails = useCallback(async () => {
-    if (!courtId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-      const courtDetails = await getCourtByIdUseCase.execute(courtId);
-      setCourt(courtDetails);
-      setLoading(false);
-    } catch (err) {
-      setError(err);
-      setLoading(false);
-      console.error(`Error al obtener detalles de la cancha ${courtId}:`, err);
-    }
-  }, [courtId, getCourtByIdUseCase]);
-
-  useEffect(() => {
-    fetchCourtDetails();
-  }, [fetchCourtDetails]);
-
-  // Efecto para cargar la disponibilidad semanal cuando se cargan los detalles de la cancha
-  useEffect(() => {
-    if (court) {
-      //console.log("DEBUG Frontend: useEffect para disponibilidad semanal activado.");
-      fetchWeeklyAvailability();
-    }
-  }, [court, courtId, currentWeekStartDate, getWeeklyAvailabilityUseCase]);
-
-  // Función para obtener la disponibilidad semanal para el calendario
-  const fetchWeeklyAvailability = async () => {
-    //console.log("DEBUG Frontend: fetchWeeklyAvailability llamada.");
-    setLoadingWeeklyAvailability(true);
-    setWeeklyAvailabilityError(null);
-
-    const sunday = addDays(currentWeekStartDate, 6);
-    const endOfSunday = setMinutes(setHours(sunday, 23), 59);
-
-    const formattedStartTime = currentWeekStartDate.toISOString();
-    const formattedEndTime = endOfSunday.toISOString();
-
-    try {
-      const weeklyAvailabilityResults = await getWeeklyAvailabilityUseCase.execute(courtId, formattedStartTime, formattedEndTime);
-      //console.log("DEBUG Frontend: Respuesta de disponibilidad semanal recibida:", weeklyAvailabilityResults);
-      setWeeklyAvailability({ ...weeklyAvailabilityResults });
-      setLoadingWeeklyAvailability(false);
-    } catch (err) {
-      setWeeklyAvailabilityError("Error al cargar la disponibilidad semanal.");
-      setLoadingWeeklyAvailability(false);
-      console.error('Error fetching weekly availability:', err);
-    }
-  };
-
-  // Función para manejar el clic en una celda de disponibilidad del calendario
-  const handleCellClick = async (date, hour) => {
-    setIsBooking(true);
-    setBookingError(null);
-    setBookingSuccess(false);
-
-    console.log("DEBUG: handleCellClick - date:", date, "hour:", hour);
-
-    try {
-      const [year, month, day] = date.split('-').map(Number);
-      const baseDate = new Date(year, month - 1, day);
-
-      const startDateTime = setMinutes(setHours(baseDate, hour), 0);
-      const endDateTime = setMinutes(setHours(baseDate, hour + 1), 0);
-
-      const formattedStartTime = startDateTime.toISOString();
-      const formattedEndTime = endDateTime.toISOString();
-
-      setBookingDetailsToConfirm({
-        courtId,
-        startDateTime,
-        endDateTime,
-        formattedStartTime,
-        formattedEndTime,
-        courtName: court?.name,
-        price: court?.price,
-      });
-      setShowConfirmModal(true);
-
-    } catch (err) {
-      setBookingError("Error al preparar la reserva. Inténtalo de nuevo.");
-      console.error('Error preparing booking:', err.response ? err.response.data : err.message);
-    } finally {
-      setIsBooking(false);
-    }
-  };
-
-  // Función para confirmar la reserva
-  const confirmBooking = async () => {
-    if (!bookingDetailsToConfirm) return;
-
-    setIsBooking(true);
-    setBookingError(null);
-    setBookingSuccess(false);
-    setShowConfirmModal(false);
-
-    try {
-      await createBookingUseCase.execute(
-        bookingDetailsToConfirm.courtId,
-        bookingDetailsToConfirm.formattedStartTime,
-        bookingDetailsToConfirm.formattedEndTime
-      );
-      setBookingSuccess(true);
-      fetchWeeklyAvailability();
-    } catch (err) {
-      console.log("DEBUG: Error en confirmBooking:", err); // Añadir log para depuración
-      console.log("DEBUG: err.response:", err.response);
-      console.log("DEBUG: err.response.status:", err.response ? err.response.status : 'N/A');
-      console.log("DEBUG: err.message:", err.message); // Log del mensaje de error
-
-      // Manejo de errores de autenticación
-      // Verificamos si es un error 401 de Axios o si el mensaje de error indica falta de autenticación
-      if ((err.response && err.response.status === 401) || (err.message === "No se pudo crear la reserva.")) {
-        setBookingError(null); // Limpiar el mensaje de error de reserva
-        setShowLoginModal(true); // Mostrar el modal de inicio de sesión
-      } else {
-        setBookingError("Error al crear la reserva. Inténtalo de nuevo.");
-      }
-      console.error('Error creating booking:', err.response ? err.response.data : err.message);
-    } finally {
-      setIsBooking(false);
-      setBookingDetailsToConfirm(null);
-    }
-  };
-
-  const cancelConfirmation = () => {
-    setShowConfirmModal(false);
-    setBookingDetailsToConfirm(null);
-    setIsBooking(false);
-  };
-
-  // Función para cerrar el modal de login y redirigir
-  const handleCloseLoginModal = () => {
-    setShowLoginModal(false);
-    navigate('/login'); // Redirigir al usuario a la página de login
-  };
-
-  // Días de la semana y horas para el calendario
-  const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  const hoursOfDay = Array.from({ length: 18 }, (_, i) => {
-    const startHour24 = i + 6;
-    const endHour24 = startHour24 + 1;
-    const tempStartDate = setMinutes(setHours(new Date(), startHour24), 0);
-    const tempEndDate = setMinutes(setHours(new Date(), endHour24), 0);
-    return `${format(tempStartDate, 'h:mm a')} - ${format(tempEndDate, 'h:mm a')}`;
-  });
-
-  const handlePreviousWeek = () => {
-    setCurrentWeekStartDate(addDays(currentWeekStartDate, -7));
-  };
-
-  const handleNextWeek = () => {
-    setCurrentWeekStartDate(addDays(currentWeekStartDate, 7));
-  };
-
-  const openModal = (image) => {
-    setSelectedImage(image.image);
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-  };
+  // Usar el hook personalizado para toda la lógica de la página
+  const {
+    court,
+    loading,
+    error,
+    selectedImage,
+    isBooking,
+    bookingError,
+    bookingSuccess,
+    showLoginModal,
+    showConfirmModal,
+    bookingDetailsToConfirm,
+    weeklyAvailability,
+    loadingWeeklyAvailability,
+    weeklyAvailabilityError,
+    currentWeekStartDate,
+    daysOfWeek,
+    hoursOfDay,
+    fetchCourtDetails,
+    handleCellClick,
+    confirmBooking,
+    cancelConfirmation,
+    handleCloseLoginModal,
+    handlePreviousWeek,
+    handleNextWeek,
+    openModal,
+    closeModal,
+  } = useCourtDetailLogic();
 
   if (loading) {
     return (

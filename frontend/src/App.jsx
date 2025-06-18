@@ -4,7 +4,6 @@ import { RepositoryProvider } from './presentation/context/RepositoryContext.jsx
 import { UseCaseProvider } from './presentation/context/UseCaseContext.jsx';
 import HomePage from './presentation/pages/HomePage.jsx';
 import RegisterPage from './presentation/components/Auth/RegisterPage.jsx';
-import CourtListPage from './presentation/pages/CourtListPage.jsx';
 import BookingPage from './presentation/pages/BookingPage.jsx';
 import ProfilePage from './presentation/pages/ProfilePage.jsx';
 import ProtectedRoute from './presentation/components/Auth/ProtectedRoute.jsx';

@@ -1,109 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet } from 'react-router-dom'; // Importar Outlet
-import { useAuth } from '../context/AuthContext.jsx'; 
+import React, { useState } from 'react';
+import { NavLink, Outlet } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useAdminDashboard } from '../hooks/useAdminDashboard.js'; // Importar el nuevo hook
 
-
-
-// Casos de uso y repositorios
-import { GetUserListUseCase } from '../../application/use-cases/get-user-list.js';
-import { UpdateUserStatusUseCase } from '../../application/use-cases/update-user-status.js';
-import { DeleteUserUseCase } from '../../application/use-cases/delete-user.js';
-import { ApiUserRepository } from '../../infrastructure/repositories/api-user-repository.js';
-
-import '../../styles/AdminGlobalDashboard.css'; // La ruta de importación es correcta
+import '../../styles/AdminGlobalDashboard.css';
 import Spinner from '../components/common/Spinner';
 
 function AdminGlobalDashboardPage() {
-  const { user, logout } = useAuth(); // Obtener logout del contexto
-  const [adminUsers, setAdminUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { user, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para controlar la visibilidad de la sidebar
-  const [error, setError] = useState(null);
-  // Estado para la alerta de suspensión
-  const [suspendSuccess, setSuspendSuccess] = useState('');
 
-  // Instanciar repositorio y casos de uso
-  const userRepository = new ApiUserRepository();
-  const getUserListUseCase = new GetUserListUseCase(userRepository);
-  const updateUserStatusUseCase = new UpdateUserStatusUseCase(userRepository); // Instanciar
-  const deleteUserUseCase = new DeleteUserUseCase(userRepository); // Instanciar
-
-  const fetchAdminUsers = async () => { // Mover la función fuera de useEffect
-    try {
-      setLoading(true);
-      setError(null); // Limpiar errores previos
-      // El backend ya filtra por role='admin' en el endpoint /users/manage-admins/
-      const users = await getUserListUseCase.execute(); 
-      setAdminUsers(users);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching admin users:", err);
-      setError(err);
-      setAdminUsers([]); // Limpiar usuarios en caso de error
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Solo cargar datos si el usuario es adminglobal
-    if (user && user.role === 'adminglobal') {
-      fetchAdminUsers(); // Carga inicial
-    } else {
-      setLoading(false);
-    }
-  }, [user]); // Dependencia del usuario del contexto
-  
-  const handleSuspendUser = async (userId) => {
-    try {
-      await updateUserStatusUseCase.execute(userId, false);
-      // Actualizar la lista de usuarios para reflejar el cambio
-        setAdminUsers(prevUsers => 
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: false } : u)
-      );
-      setSuspendSuccess('Administrador suspendido exitosamente.');
-      // Ocultar la alerta después de 3 segundos
-      setTimeout(() => {
-        setSuspendSuccess('');
-      }, 3000);
-    } catch (err) {
-      console.error(`Error suspending user ${userId}:`, err);
-      // Podríamos añadir un estado de error para suspensión si es necesario, por ahora usamos alert
-      alert(`Error al suspender administrador: ${err.message}`);
-    }
-  };
-
-  const handleReactivateUser = async (userId) => {
-    try {
-      await updateUserStatusUseCase.execute(userId, true);
-      // Actualizar la lista de usuarios para reflejar el cambio
-      setAdminUsers(prevUsers => 
-        prevUsers.map(u => u.id === userId ? { ...u, is_active: true } : u)
-      );
-       setSuspendSuccess('Administrador reactivado exitosamente.');
-      // Ocultar la alerta después de 3 segundos
-      setTimeout(() => {
-        setSuspendSuccess('');
-      }, 3000);
-      
-   
-    } catch (err) {
-      console.error(`Error reactivating user ${userId}:`, err);
-      alert(`Error al reactivar administrador: ${err.message}`);
-    }
-  };
-
-  const handleDeleteUser = async (userId) => {
-    // La confirmación ahora se maneja en el modal del componente ManageAdminsTable.jsx
-    try {
-      await deleteUserUseCase.execute(userId);
-      // Actualizar la lista de usuarios para reflejar la eliminación
-      setAdminUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
-    
-    } catch (err) {
-      console.error(`Error deleting user ${userId}:`, err);
-      alert(`Error al eliminar administrador: ${err.message}`);
-    }
-  };
+  // Usar el hook personalizado para la lógica del dashboard
+  const {
+    adminUsers,
+    loading,
+    error,
+    suspendSuccess,
+    fetchAdminUsers,
+    handleSuspendUser,
+    handleReactivateUser,
+    handleDeleteUser,
+  } = useAdminDashboard();
 
 
   if (loading) {
