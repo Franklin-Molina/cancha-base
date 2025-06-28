@@ -2,7 +2,7 @@ from typing import List, Optional, Dict, Any
 from django.contrib.auth.hashers import make_password # Para hashear contraseñas
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import Group # Importar Group
-from ...models import User # Modelo de Django User (backend/users/models.py)
+from ...models import User, Role # Importar Role
 from ...domain.repositories.user_repository import IUserRepository # Interfaz del Dominio
 
 class DjangoUserRepository(IUserRepository):
@@ -33,44 +33,46 @@ class DjangoUserRepository(IUserRepository):
             return None
 
     @sync_to_async
+    def get_role_by_name(self, role_name: str) -> Optional[Role]:
+        """
+        Obtiene un objeto Role por su nombre.
+        """
+        try:
+            return Role.objects.get(name=role_name)
+        except Role.DoesNotExist:
+            return None
+
+    @sync_to_async
     def create(self, user_data: Dict[str, Any]) -> User:
-        # No es necesario hashear la contraseña aquí, create_user lo hace.
-        # if 'password' in user_data:
-        #     user_data['password'] = make_password(user_data['password'])
-        
-        # Crear el usuario
-        # Asegurarse de que solo se pasen campos válidos al método create
-        # Por ejemplo, si 'password2' está en user_data, eliminarlo
         user_data.pop('password2', None) 
         
-        # Crear el usuario con los campos permitidos por el modelo
-        # Esto asume que user_data ya ha sido validado por un serializador
-        # y solo contiene campos que el modelo User acepta.
+        role_obj = None
+        if 'role' in user_data and user_data['role'] is not None:
+            if isinstance(user_data['role'], Role):
+                role_obj = user_data['role']
+            else:
+                try:
+                    role_obj = Role.objects.get(pk=user_data['role'])
+                except Role.DoesNotExist:
+                    raise ValueError("El rol especificado no existe.")
         
-        # Eliminar la asignación del campo 'role' ya que no está en el modelo User
-        # user_data.pop('role', None) # Asegurarse de que 'role' no se pase si no está en el modelo
-        
-        # Obtener el rol de user_data o usar el default del modelo si no se proporciona
-        role = user_data.get('role', User._meta.get_field('role').get_default())
+        user_data['role'] = role_obj
 
-        # Crear el usuario
         user = User.objects.create_user(**user_data)
 
-        # Asignar propiedades y grupos según el rol
-        if role == 'adminglobal':
-            user.is_staff = True
-            user.is_superuser = True
-        elif role == 'admin':
-            user.is_staff = True
-            try:
-                gestores_cancha_group = Group.objects.get(name='Gestores de Cancha')
-                user.groups.add(gestores_cancha_group)
-            except Group.DoesNotExist:
-                # Manejar el caso en que el grupo no exista (debería crearse con crear_grupo.py)
-                print("Advertencia: El grupo 'Gestores de Cancha' no existe. El usuario admin no se añadió al grupo.")
-        # Para 'cliente', is_staff y is_superuser son False por defecto.
-
-        user.save() # Guardar los cambios de is_staff, is_superuser y grupos
+        if role_obj:
+            if role_obj.name == 'adminglobal':
+                user.is_staff = True
+                user.is_superuser = True
+            elif role_obj.name == 'admin':
+                user.is_staff = True
+                try:
+                    gestores_cancha_group = Group.objects.get(name='Gestores de Cancha')
+                    user.groups.add(gestores_cancha_group)
+                except Group.DoesNotExist:
+                    print("Advertencia: El grupo 'Gestores de Cancha' no existe. El usuario admin no se añadió al grupo.")
+        
+        user.save()
         return user
 
     @sync_to_async
@@ -80,11 +82,39 @@ class DjangoUserRepository(IUserRepository):
         except User.DoesNotExist:
             return None
 
-        # Actualizar campos del usuario
+        # Manejar la actualización del rol si se proporciona
+        if 'role' in user_data and user_data['role'] is not None:
+            role_value = user_data.pop('role') # Quitar el rol de user_data para manejarlo aparte
+            role_obj = None
+            if isinstance(role_value, Role):
+                role_obj = role_value
+            else: # Asumir que es un ID de rol
+                try:
+                    role_obj = Role.objects.get(pk=role_value)
+                except Role.DoesNotExist:
+                    raise ValueError("El rol especificado no existe.")
+            user.role = role_obj # Asignar el objeto Role
+            
+            # Actualizar is_staff y is_superuser basado en el nuevo rol
+            if role_obj:
+                if role_obj.name == 'adminglobal':
+                    user.is_staff = True
+                    user.is_superuser = True
+                elif role_obj.name == 'admin':
+                    user.is_staff = True
+                    user.is_superuser = False # Asegurarse de que no sea superuser si es solo admin
+                elif role_obj.name == 'cliente':
+                    user.is_staff = False
+                    user.is_superuser = False
+            else: # Si el rol se establece a None
+                user.is_staff = False
+                user.is_superuser = False
+
+        # Actualizar otros campos del usuario
         for key, value in user_data.items():
-            if key == 'password': # Hashear la contraseña si se está actualizando
+            if key == 'password':
                 setattr(user, key, make_password(value))
-            elif hasattr(user, key): # Solo actualizar atributos que existen en el modelo
+            elif hasattr(user, key):
                 setattr(user, key, value)
         
         user.save()
@@ -95,9 +125,15 @@ class DjangoUserRepository(IUserRepository):
         queryset = User.objects.all()
         if filters:
             # Aplicar filtros si se proporcionan
-            # Ejemplo: filtrar por rol
-            if 'role' in filters:
-                queryset = queryset.filter(role=filters['role'])
+            # Si el filtro es por 'role__name', usarlo directamente
+            if 'role__name' in filters:
+                queryset = queryset.filter(role__name=filters['role__name'])
+            elif 'role' in filters: # Si el filtro es por ID de rol o nombre de rol
+                role_value = filters['role']
+                if isinstance(role_value, str):
+                    queryset = queryset.filter(role__name=role_value)
+                else: # Asumir que es un ID de rol
+                    queryset = queryset.filter(role=role_value)
             # Añadir más filtros según sea necesario
         return list(queryset)
 

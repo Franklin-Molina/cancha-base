@@ -101,12 +101,7 @@ class CourtDetail(views.APIView):
         update_court_use_case = UpdateCourtUseCase(court_repository)
         
         try:
-            # Envolver la llamada asíncrona con async_to_sync
-            instance = async_to_sync(court_repository.get_by_id)(pk)
-            if not instance:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            
-            serializer = CourtSerializer(instance, data=request.data, partial=True, context={'request': request})
+            serializer = CourtSerializer(data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 court_data = serializer.validated_data
                 images_data = request.FILES.getlist('images') # Manejar imágenes si se envían

@@ -114,8 +114,8 @@ class UserViewSet(viewsets.ModelViewSet): # Mantener ModelViewSet por ahora, ref
 
         # Aplicar filtro basado en el rol del usuario autenticado
         # Si el usuario es 'adminglobal', solo listar usuarios con rol 'admin'
-        if hasattr(request.user, 'role') and request.user.role == 'adminglobal':
-            filters['role'] = 'admin'
+        if hasattr(request.user, 'role') and request.user.role and request.user.role.name == 'adminglobal': # Acceder a .name
+            filters['role__name'] = 'admin' # Filtrar por el nombre del rol
         # Si el usuario es 'admin', listar todos los usuarios (comportamiento por defecto sin filtro de rol)
 
         # Envolver la llamada asíncrona con async_to_sync
@@ -134,13 +134,13 @@ class UserViewSet(viewsets.ModelViewSet): # Mantener ModelViewSet por ahora, ref
         update_user_status_use_case = UpdateUserStatusUseCase(user_repository)
 
         # Verificar que el usuario solicitante sea 'admin'
-        if not (hasattr(request.user, 'role') and request.user.role == 'admin'):
+        if not (hasattr(request.user, 'role') and request.user.role and request.user.role.name == 'admin'): # Acceder a .name
              return Response({"detail": "No tienes permiso para realizar esta acción."}, status=status.HTTP_403_FORBIDDEN)
 
         # Verificar que el usuario a modificar tenga el rol 'cliente'
         try:
             user_to_modify = User.objects.get(pk=pk)
-            if user_to_modify.role != 'cliente':
+            if user_to_modify.role and user_to_modify.role.name != 'cliente': # Acceder a .name
                  return Response({"detail": "Solo puedes activar usuarios con el rol 'cliente'."}, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist:
             return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
@@ -159,13 +159,13 @@ class UserViewSet(viewsets.ModelViewSet): # Mantener ModelViewSet por ahora, ref
         update_user_status_use_case = UpdateUserStatusUseCase(user_repository)
 
         # Verificar que el usuario solicitante sea 'admin'
-        if not (hasattr(request.user, 'role') and request.user.role == 'admin'):
+        if not (hasattr(request.user, 'role') and request.user.role and request.user.role.name == 'admin'): # Acceder a .name
              return Response({"detail": "No tienes permiso para realizar esta acción."}, status=status.HTTP_403_FORBIDDEN)
 
         # Verificar que el usuario a modificar tenga el rol 'cliente'
         try:
             user_to_modify = User.objects.get(pk=pk)
-            if user_to_modify.role != 'cliente':
+            if user_to_modify.role and user_to_modify.role.name != 'cliente': # Acceder a .name
                  return Response({"detail": "Solo puedes desactivar usuarios con el rol 'cliente'."}, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist:
             return Response({"detail": "Usuario no encontrado."}, status=status.HTTP_404_NOT_FOUND)
@@ -290,6 +290,28 @@ class GoogleLogin(SocialLoginView): # subclass the SocialLoginView
     client_class = OAuth2Client
     permission_classes = [permissions.AllowAny]
 
+    def process_login(self):
+        # Llama al método original de SocialLoginView para procesar el login
+        super().process_login()
+
+        # Verifica si el usuario tiene un rol asignado. Si no, asigna el rol 'cliente'.
+        if not self.user.role:
+            user_repository = DjangoUserRepository()
+            try:
+                # Obtener el rol 'cliente' por su ID (asumiendo que 3 es el ID de cliente)
+                # Es mejor obtenerlo por nombre para evitar dependencias de IDs fijos
+                # Pero si el usuario especificó ID 3, lo usaremos.
+                # Si el ID 3 es 'cliente', lo buscaremos por nombre para mayor robustez.
+                client_role = async_to_sync(user_repository.get_role_by_name)('cliente')
+                if client_role:
+                    self.user.role = client_role
+                    async_to_sync(self.user.asave)() # Usar asave para guardar de forma asíncrona
+                    print(f"Usuario {self.user.username} registrado con Google, rol 'cliente' asignado.")
+                else:
+                    print("Advertencia: El rol 'cliente' no se encontró en la base de datos.")
+            except Exception as e:
+                print(f"Error al asignar el rol 'cliente' al usuario de Google: {e}")
+
     def get_response(self):
         # Obtener la respuesta base de SocialLoginView
         response = super().get_response()
@@ -313,18 +335,28 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 from django.http import JsonResponse # Importar JsonResponse
 
+from .models import Role # Importar el modelo Role
+
 class AdminRegisterView(views.APIView): # Cambiar a APIView
     permission_classes = [permissions.IsAdminUser]  # Solo los administradores pueden registrar otros administradores
 
     def post(self, request): # Cambiar a método síncrono
         user_repository = DjangoUserRepository()
-        # Podríamos crear un RegisterAdminUseCase o reutilizar RegisterUserUseCase
-        # si la lógica es similar y el serializador maneja las diferencias.
         register_user_use_case = RegisterUserUseCase(user_repository) 
         
         serializer = AdminRegisterSerializer(data=request.data)
         if serializer.is_valid():
             user_data = serializer.validated_data
+            
+            # Obtener el objeto Role para 'admin'
+            try:
+                admin_role = async_to_sync(user_repository.get_role_by_name)('admin')
+                if admin_role is None:
+                    return Response({"error": "El rol 'admin' no existe en la base de datos."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                user_data['role'] = admin_role # Asignar el objeto Role
+            except Exception as e:
+                return Response({"error": f"Error al obtener el rol 'admin': {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             # Asegurarse de que el usuario creado sea staff y activo
             user_data['is_staff'] = True
             user_data['is_active'] = True # Establecer explícitamente como activo
@@ -336,6 +368,9 @@ class AdminRegisterView(views.APIView): # Cambiar a APIView
             except ValueError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
             except Exception as e:
+                print(f"Error interno al registrar el administrador: {e}") # Log para depuración
+                import traceback
+                traceback.print_exc()
                 return Response({"error": "Error interno del servidor al registrar el administrador."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -353,7 +388,8 @@ class AdminManagementViewSet(viewsets.ViewSet):
     permission_classes = [IsAdminUser] # Solo superusuarios (adminglobal)
 
     def _is_adminglobal(self, user):
-        return user.is_authenticated and user.is_superuser and user.role == 'adminglobal'
+        # Acceder a .name del objeto Role
+        return user.is_authenticated and user.is_superuser and user.role and user.role.name == 'adminglobal'
 
     def list(self, request): # Listar admins de cancha
         if not self._is_adminglobal(request.user):
@@ -362,7 +398,8 @@ class AdminManagementViewSet(viewsets.ViewSet):
         user_repository = DjangoUserRepository()
         get_user_list_use_case = GetUserListUseCase(user_repository)
         
-        admins = async_to_sync(get_user_list_use_case.execute)(filters={'role': 'admin'})
+        # Filtrar por el nombre del rol
+        admins = async_to_sync(get_user_list_use_case.execute)(filters={'role__name': 'admin'})
         serializer = UserSerializer(admins, many=True)
         return Response(serializer.data)
 
@@ -440,12 +477,10 @@ class ChangePasswordView(views.APIView):
             return Response({"error": "La contraseña actual y la nueva contraseña son requeridas."}, status=status.HTTP_400_BAD_REQUEST)
 
         user_repository = DjangoUserRepository()
-        change_password_use_case = ChangePasswordUseCase(user_repository) # TODO: Importar ChangePasswordUseCase del backend
+        change_password_use_case = ChangePasswordUseCase(user_repository)
 
         try:
-            # Envolver la llamada asíncrona con async_to_sync si el caso de uso es asíncrono
-            # Si el caso de uso es síncrono, llamar directamente:
-            # change_password_use_case.execute(user, current_password, new_password)
+            # Envolver la llamada asíncrona con async_to_sync
             async_to_sync(change_password_use_case.execute)(user, current_password, new_password)
             return Response({"detail": "Contraseña cambiada exitosamente."}, status=status.HTTP_200_OK)
         except ValueError as e:

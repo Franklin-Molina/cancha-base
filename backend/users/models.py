@@ -1,18 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group
-from django.core.exceptions import ValidationError # Importar ValidationError
-from plans.models import Plan # Importar el modelo Plan
+from django.core.exceptions import ValidationError
+from plans.models import Plan
+
+class Role(models.Model):
+    """
+    Modelo para definir los roles de usuario.
+    """
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Rol"
+        verbose_name_plural = "Roles"
+
+    def __str__(self):
+        return self.name
 
 class User(AbstractUser):
     """
     Modelo de usuario personalizado.
     """
-    ROLE_CHOICES = [
-        ('adminglobal', 'Administrador Global'),
-        ('admin', 'Administrador de Cancha'),
-        ('cliente', 'Cliente'),
-    ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='cliente')
+    # Eliminamos ROLE_CHOICES
+    # ROLE_CHOICES = [
+    #     ('adminglobal', 'Administrador Global'),
+    #     ('admin', 'Administrador de Cancha'),
+    #     ('cliente', 'Cliente'),
+    # ]
+    # El campo 'role' ahora es una ForeignKey
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
+    
     edad = models.IntegerField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
  

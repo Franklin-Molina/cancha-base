@@ -72,8 +72,27 @@ export const useRegisterLogic = () => {
       navigate('/login');
     } catch (err) {
       console.error('Error en el registro:', err.response ? err.response.data : err.message);
-      setError(err.response && err.response.data ? JSON.stringify(err.response.data) : 'Error en el registro');
-      throw err;
+      let errorMessage = 'Error en el registro';
+      if (err.response && err.response.data) {
+        // Si err.response.data es un objeto (como { "campo": ["error1", "error2"] })
+        if (typeof err.response.data === 'object') {
+          errorMessage = Object.keys(err.response.data).map(field => {
+            const fieldErrors = err.response.data[field];
+            // Asegurarse de que fieldErrors sea un array antes de usar join
+            if (Array.isArray(fieldErrors)) {
+              return `${field}: ${fieldErrors.join(', ')}`;
+            } else {
+              // Si no es un array, tratarlo como una cadena o convertirlo
+              return `${field}: ${fieldErrors}`;
+            }
+          }).join('\n');
+        } else {
+          // Si err.response.data no es un objeto (ej. una cadena de error global)
+          errorMessage = err.response.data;
+        }
+      }
+      setError(errorMessage);
+      throw err; // Re-lanzar el error para que useButtonDisable lo maneje
     }
   });
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any
-from ...models import User # Asumiendo que User está en backend/users/models.py
+from ...models import User, Role # Importar Role
 
 class IUserRepository(ABC):
     """
@@ -26,6 +26,13 @@ class IUserRepository(ABC):
     async def get_by_email(self, email: str) -> Optional[User]:
         """
         Obtiene un usuario específico por su email.
+        """
+        pass
+
+    @abstractmethod
+    async def get_role_by_name(self, role_name: str) -> Optional[Role]:
+        """
+        Obtiene un objeto Role por su nombre.
         """
         pass
 

@@ -27,9 +27,10 @@ export class RegisterUserUseCase {
         username,
         email,
         password,
+        password2: password, // Añadir password2 para que coincida con el serializador del backend
         first_name: firstName,
         last_name: lastName,
-        age,
+        edad: age, // Cambiar 'age' a 'edad' para que coincida con el serializador del backend
       };
       const newUser = await this.userRepository.registerUser(userData);
       return newUser;
