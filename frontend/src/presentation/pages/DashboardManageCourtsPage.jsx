@@ -64,7 +64,9 @@ function DashboardManageCourtsPage() {
               <td>{court.id}</td>
               <td>{court.name}</td>
               <td>{court.price}</td>
-              <td>{court.is_active ? 'Activa' : 'Suspendida'}</td>
+              <td>{Boolean(court.is_active) ? 'Activa' : 'Suspendida'}</td>
+              {console.log('Court ID:', court.id, 'is_active value:', court.is_active, 'type:', typeof court.is_active)
+}
               <td>
                 <button
                   onClick={() => handleOpenModal(court)}
@@ -74,6 +76,7 @@ function DashboardManageCourtsPage() {
                 </button>
               </td>
             </tr>
+            
           ))}
         </tbody>
       </table>
@@ -106,19 +109,7 @@ function DashboardManageCourtsPage() {
           </div>
         </div>
       )}
-
-      {/* Eliminar renderizado condicional del formulario de modificación */}
-      {/* {courtToModify && (
-        <CourtModifyForm
-          court={courtToModify}
-          onSave={handleUpdateCourt}
-          onCancel={handleCancelModify}
-        />
-      )} */}
-
-
-
-
+   
     </div>
   );
 }

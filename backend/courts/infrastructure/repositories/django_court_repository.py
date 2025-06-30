@@ -49,6 +49,10 @@ class DjangoCourtRepository(ICourtRepository):
     @transaction.atomic 
     def _create_court_sync(self, court_data: Dict[str, Any], images_data: Optional[List[Any]] = None) -> Court:
         images_to_create = court_data.pop('images', images_data or [])
+        
+        # Asegurarse de que la cancha siempre se cree como activa
+        court_data['is_active'] = True 
+        
         court = Court.objects.create(**court_data)
         if images_to_create:
             for image_file in images_to_create:
