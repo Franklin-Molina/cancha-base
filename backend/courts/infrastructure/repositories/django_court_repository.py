@@ -64,8 +64,13 @@ class DjangoCourtRepository(ICourtRepository):
 
     @sync_to_async
     @transaction.atomic
-    def _update_court_sync(self, court: Court, court_data: Dict[str, Any], images_data: Optional[List[Any]] = None) -> Court:
+    def _update_court_sync(self, court: Court, court_data: Dict[str, Any], images_data: Optional[List[Any]] = None, images_to_delete: Optional[List[int]] = None) -> Court:
         images_to_create = court_data.pop('images', images_data or [])
+        
+        # Eliminar imágenes existentes si se proporcionan IDs
+        if images_to_delete:
+            CourtImage.objects.filter(id__in=images_to_delete).delete()
+
         for key, value in court_data.items():
             setattr(court, key, value)
         court.save()
@@ -75,11 +80,11 @@ class DjangoCourtRepository(ICourtRepository):
                 CourtImage.objects.create(court=court, image=image_file)
         return court
 
-    async def update(self, court_id: int, court_data: Dict[str, Any], images_data: Optional[List[Any]] = None) -> Optional[Court]:
+    async def update(self, court_id: int, court_data: Dict[str, Any], images_data: Optional[List[Any]] = None, images_to_delete: Optional[List[int]] = None) -> Optional[Court]:
         court = await self.get_by_id(court_id) # get_by_id ya es async
         if not court:
             return None
-        return await self._update_court_sync(court, court_data, images_data)
+        return await self._update_court_sync(court, court_data, images_data, images_to_delete)
 
     @sync_to_async
     def _delete_court_sync(self, court: Court) -> None:

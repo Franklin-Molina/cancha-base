@@ -105,11 +105,27 @@ class CourtDetail(views.APIView):
             if serializer.is_valid():
                 court_data = serializer.validated_data
                 images_data = request.FILES.getlist('images') # Manejar imágenes si se envían
+                
+                # Obtener IDs de imágenes a eliminar
+                images_to_delete_str = request.data.get('images_to_delete')
+                images_to_delete = []
+                if images_to_delete_str:
+                    import json
+                    try:
+                        images_to_delete = json.loads(images_to_delete_str)
+                    except json.JSONDecodeError:
+                        return Response({"error": "Formato inválido para images_to_delete."}, status=status.HTTP_400_BAD_REQUEST)
 
                 #print(f"DEBUG: PATCH request.data: {request.data}") # DEBUG
                 #print(f"DEBUG: PATCH validated_data (court_data): {court_data}") # DEBUG
+                #print(f"DEBUG: PATCH images_to_delete: {images_to_delete}") # DEBUG
 
-                court = async_to_sync(update_court_use_case.execute)(court_id=pk, court_data=court_data, images_data=images_data)
+                court = async_to_sync(update_court_use_case.execute)(
+                    court_id=pk, 
+                    court_data=court_data, 
+                    images_data=images_data,
+                    images_to_delete=images_to_delete # Pasar los IDs de las imágenes a eliminar
+                )
                 response_serializer = CourtSerializer(court, context={'request': request})
                 return Response(response_serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

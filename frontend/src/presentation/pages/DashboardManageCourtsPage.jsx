@@ -65,8 +65,7 @@ function DashboardManageCourtsPage() {
               <td>{court.name}</td>
               <td>{court.price}</td>
               <td>{Boolean(court.is_active) ? 'Activa' : 'Suspendida'}</td>
-              {console.log('Court ID:', court.id, 'is_active value:', court.is_active, 'type:', typeof court.is_active)
-}
+            
               <td>
                 <button
                   onClick={() => handleOpenModal(court)}

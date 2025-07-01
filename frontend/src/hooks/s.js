@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUseCases } from '../context/UseCaseContext.jsx'; // Importar el hook useUseCases
+import { UseCaseContext } from '../context/UseCaseContext'; // Asumo que se usa un contexto para los casos de uso
 
 export function useModifyCourtLogic() {
-  const { getCourtByIdUseCase, updateCourtUseCase } = useUseCases(); // Usar los casos de uso específicos
+  const { courtUseCases } = useContext(UseCaseContext); // Asumo un contexto de casos de uso
   const { id } = useParams(); // Para obtener el ID de la cancha de la URL
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export function useModifyCourtLogic() {
   useEffect(() => {
     const fetchCourt = async () => {
       try {
-        const court = await getCourtByIdUseCase.execute(id); // Usar el caso de uso correcto
+        const court = await courtUseCases.getCourtById.execute(id); // Asumo un caso de uso para obtener la cancha
         if (court) {
           setFormData({
             name: court.name,
@@ -43,7 +43,7 @@ export function useModifyCourtLogic() {
       }
     };
     fetchCourt();
-  }, [id, getCourtByIdUseCase]); // Añadir getCourtByIdUseCase a las dependencias
+  }, [id, courtUseCases]);
 
   const handleChange = (e) => {
     if (e.target.name === 'images') {
@@ -103,12 +103,9 @@ export function useModifyCourtLogic() {
         dataToUpdate.append('images_to_delete', JSON.stringify(imagesToDelete));
       }
 
-      await updateCourtUseCase.execute(id, dataToUpdate); // Usar el caso de uso correcto
+      await courtUseCases.updateCourt.execute(id, dataToUpdate); // Asumo un caso de uso para actualizar la cancha
       setActionStatus('Cancha actualizada exitosamente.');
-      // Redirigir después de un breve retraso para que el usuario vea el mensaje
-      setTimeout(() => {
-        navigate('/dashboard/canchas/manage'); 
-      }, 2000); // Redirigir después de 2 segundos
+      navigate('/dashboard/canchas/manage'); // Redirigir después de guardar
     } catch (err) {
       console.error('Error al actualizar la cancha:', err);
       setError(err);

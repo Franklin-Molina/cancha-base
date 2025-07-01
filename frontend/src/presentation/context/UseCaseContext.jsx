@@ -7,6 +7,7 @@ import { DeleteUserUseCase } from '../../application/use-cases/users/delete-user
 import { GetCourtByIdUseCase } from '../../application/use-cases/courts/get-court-by-id';
 import { CheckAvailabilityUseCase } from '../../application/use-cases/courts/check-availability';
 import { GetWeeklyAvailabilityUseCase } from '../../application/use-cases/courts/get-weekly-availability';
+import { UpdateCourtUseCase } from '../../application/use-cases/courts/update-court'; // Importar UpdateCourtUseCase
 // Importar otros casos de uso aquí si es necesario
 
 // Crear el contexto para los casos de uso
@@ -28,6 +29,7 @@ export const UseCaseProvider = ({ children }) => {
   const checkAvailabilityUseCase = new CheckAvailabilityUseCase(courtRepository);
   const getWeeklyAvailabilityUseCase = new GetWeeklyAvailabilityUseCase(courtRepository);
   const createBookingUseCase = new CreateBookingUseCase(bookingRepository);
+  const updateCourtUseCase = new UpdateCourtUseCase(courtRepository); // Instanciar UpdateCourtUseCase
   // Añadir otros casos de uso aquí
 
   const useCases = {
@@ -38,6 +40,7 @@ export const UseCaseProvider = ({ children }) => {
     checkAvailabilityUseCase,
     getWeeklyAvailabilityUseCase,
     createBookingUseCase,
+    updateCourtUseCase, // Añadir updateCourtUseCase al objeto
     // Añadir otros casos de uso aquí
   };
 
