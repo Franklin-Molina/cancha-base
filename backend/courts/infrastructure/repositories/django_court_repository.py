@@ -17,23 +17,20 @@ class DjangoCourtRepository(ICourtRepository):
     async def get_all(self, filters: Optional[Dict[str, Any]] = None) -> List[Court]:
         queryset = Court.objects.all().prefetch_related('images')
         if filters:
-            # Aplicar filtros usando CourtFilter si se proporcionan
-            # Esto asume que CourtFilter puede manejar un diccionario de filtros
-            # o que adaptamos los filtros al formato que espera CourtFilter.
-            # Por simplicidad, aquí se podría hacer un filtrado directo si los filtros son simples.
-            # Ejemplo: queryset = queryset.filter(**filters)
-            # Para usar CourtFilter, necesitaríamos instanciarlo y pasarle los datos.
-            # Esto podría requerir que los filtros estén en un formato específico (ej. request.GET)
-            # o adaptar esta parte.
-            # Por ahora, asumimos que CourtFilter se puede usar con un queryset y un diccionario de filtros.
-            # Si CourtFilter está diseñado para usarse con request.GET, esta parte necesitará ajuste.
-            # Una forma simple sería:
+            # Aplicar filtros dinámicamente basados en el diccionario de filtros
+            # Esto permite flexibilidad para diferentes criterios de filtrado.
             if 'name__icontains' in filters:
-                 queryset = queryset.filter(name__icontains=filters['name__icontains'])
-            # ... añadir más filtros según sea necesario
-            # O, si CourtFilter puede tomar un queryset y un diccionario de datos:
-            # court_filter = CourtFilter(data=filters, queryset=queryset)
-            # queryset = court_filter.qs
+                queryset = queryset.filter(name__icontains=filters['name__icontains'])
+            
+            # Filtrar por el estado 'is_active' si se proporciona en los filtros
+            if 'is_active' in filters and isinstance(filters['is_active'], bool):
+                queryset = queryset.filter(is_active=filters['is_active'])
+            elif 'is_active' in filters and isinstance(filters['is_active'], str):
+                # Convertir string a booleano si es necesario (ej. "true" o "false")
+                if filters['is_active'].lower() == 'true':
+                    queryset = queryset.filter(is_active=True)
+                elif filters['is_active'].lower() == 'false':
+                    queryset = queryset.filter(is_active=False)
         
         # Usar sync_to_async para operaciones de base de datos síncronas
         return await sync_to_async(list)(queryset)

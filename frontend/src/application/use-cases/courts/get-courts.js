@@ -21,7 +21,12 @@ export class GetCourtsUseCase {
    * Ejecuta el caso de uso para obtener la lista de canchas.
    * @returns {Promise<Court[]>} Una promesa que resuelve con un array de entidades Court.
    */
-  async execute() {
-    return this.courtRepository.getCourts();
+  /**
+   * Ejecuta el caso de uso para obtener la lista de canchas.
+   * @param {object} [filters={}] - Un objeto con los filtros a aplicar.
+   * @returns {Promise<Court[]>} Una promesa que resuelve con un array de entidades Court.
+   */
+  async execute(filters = {}) {
+    return this.courtRepository.getCourts(filters);
   }
 }

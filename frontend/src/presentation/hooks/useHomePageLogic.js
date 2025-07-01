@@ -26,7 +26,8 @@ export const useHomePageLogic = () => {
       const fetchCourts = async () => {
         try {
           setLoading(true);
-          const courtsList = await getCourtsUseCase.execute();
+          // Obtener solo las canchas que están activas
+          const courtsList = await getCourtsUseCase.execute({ is_active: true });
           setCourts(courtsList);
           setLoading(false);
         } catch (err) {

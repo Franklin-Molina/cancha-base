@@ -12,9 +12,9 @@ export class ApiCourtRepository extends ICourtRepository {
    * Obtiene una lista de todas las canchas desde la API.
    * @returns {Promise<Court[]>} Una promesa que resuelve con un array de entidades Court.
    */
-  async getCourts() {
+  async getCourts(filters = {}) {
     try {
-      const response = await api.get('/api/courts/'); // Llamada a la API usando la instancia configurada
+      const response = await api.get('/api/courts/', { params: filters }); // Llamada a la API usando la instancia configurada y pasando filtros
       // Mapear los datos de la respuesta a entidades Court del Dominio
       return response.data.map(courtData => new Court(courtData));
     } catch (error) {
