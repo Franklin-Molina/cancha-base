@@ -7,7 +7,6 @@ class Court(models.Model):
     """
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    characteristics = models.TextField(blank=True, help_text="Características específicas de la cancha (ej: tipo de superficie, tamaño, si es techada)")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_active = models.BooleanField(default=True, help_text="Indica si la cancha está activa o suspendida.")
     # La disponibilidad se gestionará a través del modelo de Reservas

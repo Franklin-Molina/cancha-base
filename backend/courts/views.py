@@ -47,6 +47,10 @@ class CourtList(views.APIView): # Cambiar a APIView para manejar la lógica manu
             court_data = serializer.validated_data
             images_data = request.FILES.getlist('images')
             
+            # Validar que al menos una imagen sea proporcionada
+            if not images_data:
+                return Response({"images": "Se requiere al menos una imagen para la cancha."}, status=status.HTTP_400_BAD_REQUEST)
+
             try:
                 # Envolver la llamada asíncrona con async_to_sync
                 court = async_to_sync(create_court_use_case.execute)(court_data, images_data)

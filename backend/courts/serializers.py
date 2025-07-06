@@ -11,7 +11,40 @@ class CourtSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Court
-        fields = ['id', 'name', 'description', 'characteristics', 'price', 'is_active', 'images'] # Incluir 'images' en los campos
+        fields = ['id', 'name', 'description', 'price', 'is_active', 'images'] # Incluir 'images' en los campos
+
+    def validate(self, data):
+        """
+        Valida los campos 'name', 'description' y 'price'.
+        Asegura que los campos de texto no estén vacíos y que el precio sea un número positivo.
+        """
+        # Validar que 'name' no esté vacío o solo espacios en blanco
+        name = data.get('name')
+        if not name or not name.strip():
+            raise serializers.ValidationError({"name": "El nombre de la cancha no puede estar vacío."})
+        data['name'] = name.strip() # Limpiar espacios en blanco
+
+        # Validar que 'description' no esté vacío o solo espacios en blanco
+        description = data.get('description')
+        if not description or not description.strip():
+            raise serializers.ValidationError({"description": "La descripción no puede estar vacía."})
+        data['description'] = description.strip() # Limpiar espacios en blanco
+
+        # Validar que 'price' sea un número positivo
+        price = data.get('price')
+        if price is None:
+            raise serializers.ValidationError({"price": "El precio es obligatorio."})
+        if not isinstance(price, (int, float)):
+            try:
+                price = float(price) # Intentar convertir a float si no es ya un número
+            except ValueError:
+                raise serializers.ValidationError({"price": "El precio debe ser un número válido."})
+        
+        if price <= 0:
+            raise serializers.ValidationError({"price": "El precio debe ser un número positivo."})
+        data['price'] = price # Asegurar que el precio sea un número en los datos validados
+
+        return data
 
     def create(self, validated_data):
         # Lógica para crear la cancha y manejar las imágenes asociadas

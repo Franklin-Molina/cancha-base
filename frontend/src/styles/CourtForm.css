@@ -1,0 +1,304 @@
+/* Estilos para el contenedor principal del widget */
+.court-form-widget {
+  border-radius: 8px;
+  box-shadow: var(--dashboard-widget-shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+  background-color: white;
+}
+
+/* Estilos para el encabezado del widget */
+.court-form-widget-header {
+  background: linear-gradient(to right, #4a89dc, #6c5ce7); /* Gradiente de color */
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.court-form-widget-header .header-icon {
+  font-size: 2rem;
+  margin-right: 15px;
+  color: white;
+  width: 32px; /* Ajustar tamaño del icono */
+  height: 32px;
+}
+
+.court-form-widget-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white; /* Color blanco para el título en el encabezado */
+  margin-bottom: 5px;
+}
+
+.court-form-widget-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8); /* Color más claro para el subtítulo */
+}
+
+/* Estilos para el contenido del widget */
+.court-form-widget-content {
+  padding: 20px;
+}
+
+/* Estilos para los mensajes de éxito/error */
+.court-form-message-success {
+  color: green;
+  margin-bottom: 1rem;
+}
+
+.court-form-message-error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+/*  Estilos para los contenedores de input 
+.court-form-input-group {
+ /* margin-bottom: 1.5rem; /* Más espacio entre grupos 
+} */
+
+/* Estilos para las etiquetas */
+.court-form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem; /* Más espacio debajo de la etiqueta */
+  font-weight: 600;
+  color: var(--dashboard-text-color);
+  font-size: 1rem;
+}
+
+.court-form-label .input-icon {
+  margin-right: 8px;
+  width: 20px; /* Tamaño de los iconos de input */
+  height: 20px;
+  color: #4a89dc; /* Color por defecto para los iconos de input */
+}
+
+.court-form-label .input-icon.green-icon {
+  color: #28a745; /* Icono de dólar verde */
+}
+
+.court-form-label .input-icon.purple-icon {
+  color: #6f42c1; /* Icono de descripción morado */
+}
+
+.court-form-label .input-icon.orange-icon {
+  color: #fd7e14; /* Icono de imagen naranja */
+}
+
+/* Estilos para los inputs de texto y textarea */
+.court-form-input,
+.court-form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem; /* Más padding */
+  border: 1px solid #e0e0e0; /* Borde más suave */
+  border-radius: 6px; /* Bordes más redondeados */
+  background-color: #fdfdfd; /* Fondo casi blanco */
+  color: #333;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); /* Sutil sombra interna */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.court-form-input::placeholder,
+.court-form-textarea::placeholder {
+  color: #b0b0b0; /* Color de placeholder más claro */
+}
+
+.court-form-input:focus,
+.court-form-textarea:focus {
+  border-color: #4a89dc;
+  box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.2);
+  outline: none;
+}
+
+.court-form-textarea {
+  min-height: 120px; /* Altura mínima para el textarea */
+  resize: vertical; /* Permitir redimensionar verticalmente */
+}
+
+/* Estilos para el campo de precio */
+
+.price-input-wrapper:focus-within {
+  border-color: #4a89dc;
+  box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.2);
+  outline: none;
+}
+
+.price-currency {
+  padding: 0.75rem 0.5rem 0.75rem 1rem;
+  color: #555;
+  font-size: 1rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.price-input {
+  flex-grow: 1;
+  border: none; /* Eliminar cualquier borde */
+  padding: 0.75rem 1rem 0.75rem 0; /* Padding para el texto dentro del input */
+  background: none; /* Eliminar cualquier fondo o imagen de fondo */
+  box-shadow: none; /* Eliminar cualquier sombra */
+  outline: none; /* Eliminar cualquier outline */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  min-width: 0;
+  border-color: transparent; /* Asegurar que el color del borde sea transparente */
+  background-clip: padding-box;
+}
+
+
+/* Estilos para el botón de submit */
+.court-form-submit-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #4a89dc; /* Color primario */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Botón de ancho completo */
+  margin-top: 1rem;
+}
+
+.court-form-submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.court-form-submit-button:hover:not(:disabled) {
+  background-color: #3a7bd5; /* Un poco más oscuro al pasar el ratón */
+}
+
+/* Estilos para la sección de imágenes */
+.court-form-gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem; /* Más espacio */
+}
+
+.court-form-gallery-header .court-form-label {
+  margin-bottom: 0; /* Eliminar margen inferior de la etiqueta dentro del header */
+}
+
+.photo-count-text {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.court-form-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.court-form-image-container {
+  position: relative;
+  width: 100px; /* Tamaño fijo para las miniaturas */
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.court-form-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.court-form-dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* Oscurecer un poco la imagen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.court-form-image-container:hover .court-form-dark-overlay {
+  opacity: 1;
+}
+
+.court-form-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px; /* Un poco más grande para el icono */
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8em;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0; /* Oculto por defecto */
+  transition: opacity 0.3s ease;
+}
+
+.court-form-image-container:hover .court-form-close-btn {
+  opacity: 1; /* Visible al pasar el ratón */
+}
+
+.court-form-add-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 0.8em;
+}
+
+.court-form-add-photo-icon {
+  font-size: 2.5em; /* Icono de cámara más grande */
+  margin-bottom: 5px;
+  color: #888;
+}
+
+.court-form-add-photo-text {
+  text-align: center;
+}
+
+.add-photo-container {
+  border: 1px dashed #ccc; /* Borde punteado para el área de agregar foto */
+  background-color: #f9f9f9;
+}
+
+/* Asegurarse de que el input de archivo esté oculto */
+.court-form-hidden-input {
+  display: none;
+}
+
+/* Estilos para el contenedor de Nombre y Precio en pantallas grandes */
+@media (min-width: 768px) { /* Aplicar a partir de tablets y desktops */
+  .court-form-name-price-group {
+    display: flex;
+    gap: 20px; /* Espacio entre los dos campos */
+  }
+
+  .court-form-name-price-group .court-form-input-group {
+    flex: 1; /* Cada campo ocupará el 50% del espacio disponible */
+    margin-bottom: 0; /* Eliminar el margen inferior cuando están en línea */
+  }
+}
