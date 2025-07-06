@@ -63,14 +63,21 @@ function DashboardLayout() {
           <h2>Cancha Admin</h2>
         </div>
         <div className="dashboard-sidebar-menu">
-          <div className="profile-container">
+         {/*  <div className="profile-container">
             <div className="profile-img">
               <i className="fas fa-user"></i>
             </div>
             <div className="profile-name">{user.username}</div>
             <div className="profile-role">{user.role}</div>
-          </div>
+          </div> */}
+            <div className="dashboard-menu-title">Cuenta</div>
 
+          <Link to="/dashboard/perfil" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
+            <i className="fas fa-user"></i>
+            <span>Perfil</span>
+          </Link>   
+
+  <div className="dashboard-menu-title">Home</div>
           <Link to="/" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
             <i className="fas fa-home"></i>
             <span>Inicio</span>
@@ -121,13 +128,8 @@ function DashboardLayout() {
             <span>Estadísticas</span>
           </Link>
 
-          <div className="dashboard-menu-title">Cuenta</div>
-
-          <Link to="/dashboard/perfil" className="dashboard-menu-item" onClick={closeSidebar}> {/* Cerrar sidebar al hacer click */}
-            <i className="fas fa-user"></i>
-            <span>Perfil</span>
-          </Link>          
-
+               
+  <div className="dashboard-menu-title">Salir</div>
           <div className="dashboard-menu-item" onClick={() => { handleLogout(); closeSidebar(); }} style={{ cursor: 'pointer' }}> {/* Logout y cerrar sidebar */}
             <i className="fas fa-sign-out-alt"></i>
             <span>Cerrar Sesión</span>

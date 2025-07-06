@@ -1,4 +1,4 @@
-He buscado plataformas de reservas de canchas sintéticas en Brave. Los resultados muestran varias plataformas como "ATC", "Donde Juego", "QuieroCancha" y "Partidazo.Net". También hay referencias a sistemas de reserva de canchas del gobierno en Colombia y Ecuador. Ahora, crearé un plan para un sistema similar con frontend y backend separados.
+
 
 Plan para un Sistema de Reservas de Canchas Sintéticas
 

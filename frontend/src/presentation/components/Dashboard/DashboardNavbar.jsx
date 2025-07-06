@@ -1,9 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import { useAuth } from '../../context/AuthContext.jsx';
 import '../../../styles/DashboardNavbar.css';
 
 function DashboardNavbar({ toggleSidebar }) {
   const { user } = useAuth();
+  const navigate = useNavigate(); // Obtener la función de navegación
+
+  const handleNavbarRightClick = () => {
+    navigate('/dashboard/perfil'); // Redirigir a /dashboard/perfil
+  };
 
   return (
     <header className="dashboard-navbar">
@@ -19,10 +25,11 @@ function DashboardNavbar({ toggleSidebar }) {
         </div>
 
         {/* Información del usuario o elementos de la derecha */}
-        <div className="navbar-right">
+        <div className="navbar-right" onClick={handleNavbarRightClick} style={{ cursor: 'pointer' }}> {/* Añadir onClick y estilo de cursor */}
+         
           <div className="user-profile">          
             <div className="user-avatar">{user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>
-            <div className="user-info">
+            <div className="user-info">              
               <div className="user-name">{user.username}</div>
               <div className="user-role">{user.role}</div>
             </div>
