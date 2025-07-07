@@ -25,7 +25,7 @@ export class ApiAuthRepository extends IAuthRepository {
       const authenticatedUserInstance = new AuthenticatedUser(user);
       return { tokens, user: authenticatedUserInstance };
     } catch (error) {
-      console.error('Error logging in:', error);
+    //  console.error('Error logging in:', error);
       throw error;
     }
   }

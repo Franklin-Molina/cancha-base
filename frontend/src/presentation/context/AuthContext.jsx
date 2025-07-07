@@ -67,11 +67,11 @@ export const AuthProvider = ({ children }) => {
       }
 
     } catch (error) {
-      console.error('Error al obtener información del usuario:', error);
+      // console.error('Error al obtener información del usuario:', error); // Eliminado mensaje de consola
       // Si hay un error al obtener el usuario (ej. token expirado), el repositorio ya debería haber limpiado los tokens
       setUser(null);
       setIsAuthenticated(false);
-      // No redirigir aquí, ProtectedRoute manejará la redirección si isAuthenticated es false
+      // No redirigir aquí, la redirección al login se maneja en ProtectedRoute
     } finally {
       setLoading(false); // Asegurar que loading se establezca en false siempre
     }
@@ -100,10 +100,10 @@ export const AuthProvider = ({ children }) => {
       }
 
     } catch (error) {
-      console.error('Error en el inicio de sesión (AuthContext):', error);
+      // console.error('Error en el inicio de sesión (AuthContext):', error); // Eliminado mensaje de consola
       if (error.response && error.response.data) {
         // Loguear el string exacto de la respuesta de error
-        console.log('Raw error response data string (AuthContext):', JSON.stringify(error.response.data));
+        //console.log('Raw error response data string (AuthContext):', JSON.stringify(error.response.data));
         let errorMessage = 'Error en el inicio de sesión.'; // Mensaje por defecto
         
         if (error.response.data.detail) {
@@ -112,8 +112,14 @@ export const AuthProvider = ({ children }) => {
           errorMessage = error.response.data.non_field_errors[0];
         }
         
-        if (errorMessage.toLowerCase().includes("cuenta de usuario está inactiva")) {
-          toast.error("Tu cuenta está suspendida. Por favor, contacta al administrador."); // Usar toast
+        // Manejo específico para credenciales inválidas
+        if (errorMessage.toLowerCase().includes("no active account found with the given credentials") ||
+            errorMessage.toLowerCase().includes("unable to log in with provided credentials") ||
+            errorMessage.toLowerCase().includes("credenciales inválidas")) { // Añadir "credenciales inválidas" si el backend lo usa
+          toast.error("Usuario o contraseña incorrectos.");
+          return;
+        } else if (errorMessage.toLowerCase().includes("cuenta de usuario está inactiva")) {
+          toast.error("Tu cuenta está suspendida. Por favor, contacta al administrador.");
           return; 
         } else {
           toast.error(errorMessage); // Usar toast para otros errores
@@ -122,7 +128,7 @@ export const AuthProvider = ({ children }) => {
         toast.error('Error en el inicio de sesión. Verifica tu conexión.'); // Mensaje genérico si no hay respuesta de error
       }
       // No relanzar el error si ya se manejó con toast
-      // throw error; // Comentar o eliminar esta línea
+      // throw error; 
     }
   };
 
@@ -138,7 +144,7 @@ export const AuthProvider = ({ children }) => {
       toast.info('Sesión cerrada exitosamente.'); // Alerta de cierre de sesión
       return <Navigate to="/" replace />; // Redirigir a la página de inicio
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
+      // console.error('Error al cerrar sesión:', error); // Eliminado mensaje de consola
       toast.error('Error al cerrar sesión.'); // Alerta de error al cerrar sesión
       // Manejar el error si es necesario, aunque logout local debería ser robusto
     }
@@ -149,12 +155,12 @@ export const AuthProvider = ({ children }) => {
     try {
       // Llamar al caso de uso para iniciar sesión con Google
       const tokens = await loginWithGoogleUseCase.execute(googleAccessToken);
-      console.log("Login con Google exitoso, tokens obtenidos:", tokens);
+      // console.log("Login con Google exitoso, tokens obtenidos:", tokens); // Eliminado mensaje de consola
       // Después de obtener los tokens, obtener la información del usuario
       await fetchUser(); // fetchUser ahora maneja la redirección después de obtener el usuario
 
     } catch (error) {
-      console.error('Error al iniciar sesión con Google:', error);
+      // console.error('Error al iniciar sesión con Google:', error); // Eliminado mensaje de consola
       // Relanzar el error para que el componente de UI lo maneje
       throw error;
     }

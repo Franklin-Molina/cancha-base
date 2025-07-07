@@ -90,7 +90,7 @@ export const useCourtForm = () => {
 
     try {
       const createdCourt = await createCourtUseCase.execute(courtData);
-      console.log('Cancha creada:', createdCourt);
+      // console.log('Cancha creada:', createdCourt); // Eliminado mensaje de consola
       toast.success('Cancha creada exitosamente!'); // Usar toast.success
       setFormData({
         name: '',
@@ -99,7 +99,7 @@ export const useCourtForm = () => {
         images: [],
       });
     } catch (error) {
-      console.error('Error al crear cancha:', error.response ? error.response.data : error.message);
+      // console.error('Error al crear cancha:', error.response ? error.response.data : error.message); // Eliminado mensaje de consola
       if (error.response && error.response.data) {
         let errorText = 'Error al crear cancha: '; // Eliminado "xd"
         if (typeof error.response.data === 'object' && error.response.data !== null) {

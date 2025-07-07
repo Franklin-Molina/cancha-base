@@ -69,7 +69,7 @@ export const useManageCourtsLogic = () => {
       );
       toast.success('Cancha suspendida exitosamente.'); // Alerta de éxito
     } catch (error) {
-      console.error(`Error al suspender cancha ${courtId}:`, error);
+      // console.error(`Error al suspender cancha ${courtId}:`, error); // Eliminado mensaje de consola
       toast.error(`Error al suspender cancha: ${error.message}`); // Alerta de error
       throw error;
     }
@@ -83,7 +83,7 @@ export const useManageCourtsLogic = () => {
       );
       toast.success('Cancha reactivada exitosamente.'); // Alerta de éxito
     } catch (error) {
-      console.error(`Error al reactivar cancha ${courtId}:`, error);
+      // console.error(`Error al reactivar cancha ${courtId}:`, error); // Eliminado mensaje de consola
       toast.error(`Error al reactivar cancha: ${error.message}`); // Alerta de error
       throw error;
     }
@@ -102,7 +102,7 @@ export const useManageCourtsLogic = () => {
       setCourts(prevCourts => prevCourts.filter(c => c.id !== courtToDelete.id));
       toast.success(`Cancha ${courtToDelete.name} eliminada exitosamente.`); // Alerta de éxito
     } catch (error) {
-      console.error(`Error al eliminar la cancha ${courtToDelete.id}:`, error);
+      // console.error(`Error al eliminar la cancha ${courtToDelete.id}:`, error); // Eliminado mensaje de consola
       toast.error(`Error al eliminar cancha ${courtToDelete.name}: ${error.message}`); // Alerta de error
       throw error;
     } finally {

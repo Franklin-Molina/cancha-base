@@ -18,7 +18,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // Mapear los datos de la respuesta a entidades Court del Dominio
       return response.data.map(courtData => new Court(courtData));
     } catch (error) {
-      console.error('Error fetching courts from API:', error);
+      // console.error('Error fetching courts from API:', error); // Eliminado mensaje de consola
       throw error; // Relanzar el error para que la capa superior lo maneje
     }
   }
@@ -34,7 +34,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // Mapear los datos de la respuesta a una entidad Court del Dominio
       return new Court(response.data);
     } catch (error) {
-      console.error(`Error fetching court ${courtId} from API:`, error);
+      // console.error(`Error fetching court ${courtId} from API:`, error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }
@@ -75,7 +75,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // Mapear los datos de la respuesta a una entidad Court del Dominio
       return new Court(response.data);
     } catch (error) {
-      console.error('Error creating court via API:', error);
+      // console.error('Error creating court via API:', error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }
@@ -97,7 +97,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // La respuesta de la API ya debería tener el formato esperado [{ id, name, is_available }, ...]
       return response.data;
     } catch (error) {
-      console.error('Error checking availability via API:', error);
+      // console.error('Error checking availability via API:', error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }
@@ -121,7 +121,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // Asumiendo que la API devuelve el formato { 'YYYY-MM-DD': { hour: boolean, ... }, ... }
       return response.data;
     } catch (error) {
-      console.error(`Error fetching weekly availability for court ${courtId}:`, error);
+      // console.error(`Error fetching weekly availability for court ${courtId}:`, error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }
@@ -139,7 +139,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // return new Court(response.data); // Si la API devuelve la cancha actualizada
       return response.data; // O simplemente un mensaje de éxito
     } catch (error) {
-      console.error(`Error updating court ${courtId} status via API:`, error);
+      // console.error(`Error updating court ${courtId} status via API:`, error); // Eliminado mensaje de consola
       throw error;
     }
   }
@@ -152,7 +152,7 @@ export class ApiCourtRepository extends ICourtRepository {
     try {
       await api.delete(`/api/courts/${courtId}/`);
     } catch (error) {
-      console.error(`Error deleting court ${courtId} via API:`, error);
+      // console.error(`Error deleting court ${courtId} via API:`, error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }
@@ -176,7 +176,7 @@ export class ApiCourtRepository extends ICourtRepository {
       // Mapear los datos de la respuesta a una entidad Court del Dominio
       return new Court(response.data);
     } catch (error) {
-      console.error(`Error updating court ${courtId} via API:`, error);
+      // console.error(`Error updating court ${courtId} via API:`, error); // Eliminado mensaje de consola
       throw error; // Relanzar el error
     }
   }

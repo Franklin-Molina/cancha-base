@@ -70,7 +70,7 @@ function AuthPage() {
   // Manejar inicio de sesión con Google exitoso usando el caso de uso
   // Manejar inicio de sesión con Google exitoso usando el caso de uso
   const handleLoginSuccess = async (response) => {
-    console.log('Inicio de sesión con Google exitoso:', response);
+   // console.log('Inicio de sesión con Google exitoso:', response);
     const googleAccessToken = response.access_token; // Obtener el access_token de la respuesta de Google
 
     // Esperar a que la cookie CSRF se haya obtenido
@@ -85,7 +85,7 @@ function AuthPage() {
       // Llamar a la función loginWithGoogle del contexto.
       // Esta se encargará de llamar al caso de uso, guardar tokens y llamar a fetchUser.
       await contextLoginWithGoogle(googleAccessToken);
-      console.log('Llamada a contextLoginWithGoogle completada.');
+     // console.log('Llamada a contextLoginWithGoogle completada.');
       // La redirección es manejada por fetchUser en AuthContext
 
     } catch (error) {

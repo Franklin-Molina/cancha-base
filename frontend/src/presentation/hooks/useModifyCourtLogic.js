@@ -108,7 +108,7 @@ export function useModifyCourtLogic() {
         navigate('/dashboard/canchas/manage'); 
       }, 2000); // Redirigir después de 2 segundos
     } catch (err) {
-      console.error('Error al actualizar la cancha:', err);
+      // console.error('Error al actualizar la cancha:', err); // Eliminado mensaje de consola
       setError(err);
       toast.error(`Error al actualizar la cancha: ${err.message || 'No se pudo actualizar la cancha.'}`); // Alerta de error
     } finally {

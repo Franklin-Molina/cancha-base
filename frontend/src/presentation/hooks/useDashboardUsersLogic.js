@@ -58,7 +58,7 @@ export const useDashboardUsersLogic = () => {
       setClientUsers(users);
       setLoading(false);
     } catch (err) {
-      console.error("Error al obtener usuarios cliente:", err);
+      // console.error("Error al obtener usuarios cliente:", err); // Eliminado mensaje de consola
       setError(err);
       setClientUsers([]);
       setLoading(false);
@@ -82,7 +82,7 @@ export const useDashboardUsersLogic = () => {
       );
       toast.success('Usuario suspendido exitosamente.'); // Alerta de éxito
     } catch (err) {
-      console.error(`Error al suspender usuario ${userId}:`, err);
+      // console.error(`Error al suspender usuario ${userId}:`, err); // Eliminado mensaje de consola
       toast.error(`Error al suspender usuario: ${err.message}`); // Alerta de error
       throw err;
     }
@@ -96,7 +96,7 @@ export const useDashboardUsersLogic = () => {
       );
       toast.success('Usuario reactivado exitosamente.'); // Alerta de éxito
     } catch (err) {
-      console.error(`Error al reactivar usuario ${userId}:`, err);
+      // console.error(`Error al reactivar usuario ${userId}:`, err); // Eliminado mensaje de consola
       toast.error(`Error al reactivar usuario: ${err.message}`); // Alerta de error
       throw err;
     }
@@ -119,7 +119,7 @@ export const useDashboardUsersLogic = () => {
         setClientUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
         toast.success('Usuario eliminado exitosamente.'); // Alerta de éxito
       } catch (err) {
-        console.error(`Error al eliminar usuario ${userToDelete.id}:`, err);
+        // console.error(`Error al eliminar usuario ${userToDelete.id}:`, err); // Eliminado mensaje de consola
         toast.error(`Error al eliminar usuario: ${err.message}`); // Alerta de error
         throw err;
       } finally {
