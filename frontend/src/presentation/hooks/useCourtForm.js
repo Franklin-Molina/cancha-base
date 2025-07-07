@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CreateCourtUseCase } from '../../application/use-cases/courts/create-court';
 import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository';
 import useButtonDisable from './useButtonDisable.js';
+import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 export const useCourtForm = () => {
   const courtRepository = new ApiCourtRepository();
@@ -13,7 +14,7 @@ export const useCourtForm = () => {
     description: '',
     images: [],
   });
-  const [message, setMessage] = useState(null);
+  // Eliminamos el estado 'message' ya que react-toastify lo manejará
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -48,32 +49,32 @@ export const useCourtForm = () => {
   // Función para validar los campos del formulario
   const validateForm = () => {
     if (!formData.name.trim()) {
-      setMessage({ type: 'error', text: 'El nombre de la cancha es obligatorio.' });
+      toast.error('El nombre de la cancha es obligatorio.');
       return false;
     }
     if (!formData.price.trim()) {
-      setMessage({ type: 'error', text: 'El precio por hora es obligatorio.' });
+      toast.error('El precio por hora es obligatorio.');
       return false;
     }
     if (isNaN(parseFloat(formData.price))) {
-      setMessage({ type: 'error', text: 'El precio debe ser un número válido.' });
+      toast.error('El precio debe ser un número válido.');
       return false;
     }
     if (!formData.description.trim()) {
-      setMessage({ type: 'error', text: 'La descripción es obligatoria.' });
+      toast.error('La descripción es obligatoria.');
       return false;
     }
-    // Puedes añadir validación para las imágenes si es necesario
-    // if (formData.images.length === 0) {
-    //   setMessage({ type: 'error', text: 'Debes subir al menos una imagen.' });
-    //   return false;
-    // }
+    // Validación para las imágenes
+    if (formData.images.length === 0) {
+      toast.error('Debes subir al menos una imagen para la cancha.');
+      return false;
+    }
     return true;
   };
 
   const [isSubmitting, handleSubmit] = useButtonDisable(async (e) => {
     e.preventDefault();
-    setMessage(null); // Limpiar mensajes anteriores
+    // No necesitamos limpiar mensajes anteriores con toastify, ya que se gestionan automáticamente
 
     // Validar el formulario antes de intentar enviar
     if (!validateForm()) {
@@ -90,7 +91,7 @@ export const useCourtForm = () => {
     try {
       const createdCourt = await createCourtUseCase.execute(courtData);
       console.log('Cancha creada:', createdCourt);
-      setMessage({ type: 'success', text: 'Cancha creada exitosamente!' });
+      toast.success('Cancha creada exitosamente!'); // Usar toast.success
       setFormData({
         name: '',
         price: '',
@@ -100,7 +101,7 @@ export const useCourtForm = () => {
     } catch (error) {
       console.error('Error al crear cancha:', error.response ? error.response.data : error.message);
       if (error.response && error.response.data) {
-        let errorText = 'Error al crear cancha: ';
+        let errorText = 'Error al crear cancha: '; // Eliminado "xd"
         if (typeof error.response.data === 'object' && error.response.data !== null) {
            try {
               const errorMessages = Object.entries(error.response.data)
@@ -116,9 +117,9 @@ export const useCourtForm = () => {
         } else {
           errorText += error.response.data;
         }
-        setMessage({ type: 'error', text: errorText });
+        toast.error(errorText); // Usar toast.error
       } else {
-        setMessage({ type: 'error', text: 'Error al crear cancha. Verifica la conexión o los datos.' });
+        toast.error('Error al crear cancha. Verifica la conexión o los datos.'); // Usar toast.error
       }
       throw error;
     }
@@ -126,7 +127,7 @@ export const useCourtForm = () => {
 
   return {
     formData,
-    message,
+    // Eliminamos 'message' del retorno
     handleChange,
     handleRemoveImage,
     handleSubmit,

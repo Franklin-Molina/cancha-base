@@ -21,6 +21,8 @@ import DashboardUsersPage from './presentation/pages/DashboardUsersPage.jsx'; //
 import DashboardModifyCourtPage from './presentation/pages/DashboardModifyCourtPage.jsx'; // Importar la nueva página de modificación
 import AdminGlobalDashboardPage from './presentation/pages/AdminGlobalDashboardPage.jsx';
 import ManageAdminsTable from './presentation/components/AdminGlobalDashboard/ManageAdminsTable.jsx'; // Nuevo componente
+import { ToastContainer } from 'react-toastify'; // Importar ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Importar los estilos CSS de react-toastify
 
 function App() {
   return (
@@ -112,7 +114,8 @@ function App() {
           <Route path="register-admin" element={<AdminRegisterPage />} /> {/* Registrar admin dentro del layout adminglobal */}
         </Route>
       </Routes>
-    </UseCaseProvider>
+      </UseCaseProvider>
+      <ToastContainer position="top-right" autoClose={1500} /> {/* Componente para mostrar las notificaciones */}
     </RepositoryProvider>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import useButtonDisable from '../hooks/useButtonDisable.js';
+import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 // Casos de uso y repositorios
 import { GetUserListUseCase } from '../../application/use-cases/users/get-user-list.js';
@@ -37,7 +38,6 @@ export const useDashboardUsersLogic = () => {
   const [clientUsers, setClientUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState('');
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -53,7 +53,6 @@ export const useDashboardUsersLogic = () => {
     try {
       setLoading(true);
       setError(null);
-      setActionStatus('');
       const response = await getUserListUseCase.execute({ role: 'cliente' });
       const users = Array.isArray(response) ? response : response.results || response.users || [];
       setClientUsers(users);
@@ -63,7 +62,7 @@ export const useDashboardUsersLogic = () => {
       setError(err);
       setClientUsers([]);
       setLoading(false);
-      setActionStatus('Error al cargar usuarios.');
+      toast.error('Error al cargar usuarios.'); // Alerta de error
     }
   };
 
@@ -77,32 +76,28 @@ export const useDashboardUsersLogic = () => {
 
   const [isSuspending, handleSuspendUserClick] = useButtonDisable(async (userId) => {
     try {
-      setActionStatus('Suspendiendo usuario...');
       await userRepository.updateClientUserStatus(userId, false);
       setClientUsers(prevUsers =>
         prevUsers.map(u => u.id === userId ? { ...u, is_active: false } : u)
       );
-      setActionStatus('Usuario suspendido exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
+      toast.success('Usuario suspendido exitosamente.'); // Alerta de éxito
     } catch (err) {
       console.error(`Error al suspender usuario ${userId}:`, err);
-      setActionStatus(`Error al suspender usuario: ${err.message}`);
+      toast.error(`Error al suspender usuario: ${err.message}`); // Alerta de error
       throw err;
     }
   });
 
   const [isReactivating, handleReactivateUserClick] = useButtonDisable(async (userId) => {
     try {
-      setActionStatus('Reactivando usuario...');
       await userRepository.updateClientUserStatus(userId, true);
       setClientUsers(prevUsers =>
         prevUsers.map(u => u.id === userId ? { ...u, is_active: true } : u)
       );
-      setActionStatus('Usuario reactivado exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
+      toast.success('Usuario reactivado exitosamente.'); // Alerta de éxito
     } catch (err) {
       console.error(`Error al reactivar usuario ${userId}:`, err);
-      setActionStatus(`Error al reactivar usuario: ${err.message}`);
+      toast.error(`Error al reactivar usuario: ${err.message}`); // Alerta de error
       throw err;
     }
   });
@@ -120,14 +115,12 @@ export const useDashboardUsersLogic = () => {
   const [isDeleting, proceedDeleteClick] = useButtonDisable(async () => {
     if (userToDelete) {
       try {
-        setActionStatus('Eliminando usuario...');
         await deleteUserUseCase.execute(userToDelete.id);
         setClientUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
-        setActionStatus('Usuario eliminado exitosamente.');
-        setTimeout(() => setActionStatus(''), 3000);
+        toast.success('Usuario eliminado exitosamente.'); // Alerta de éxito
       } catch (err) {
         console.error(`Error al eliminar usuario ${userToDelete.id}:`, err);
-        setActionStatus(`Error al eliminar usuario: ${err.message}`);
+        toast.error(`Error al eliminar usuario: ${err.message}`); // Alerta de error
         throw err;
       } finally {
         cancelDelete();
@@ -149,7 +142,6 @@ export const useDashboardUsersLogic = () => {
     clientUsers,
     loading,
     error,
-    actionStatus,
     showDeleteModal,
     userToDelete,
     showDetailsModal,

@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUseCases } from '../context/UseCaseContext.jsx'; // Importar el hook useUseCases
+import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 export function useModifyCourtLogic() {
   const { getCourtByIdUseCase, updateCourtUseCase } = useUseCases(); // Usar los casos de uso específicos
@@ -10,13 +11,11 @@ export function useModifyCourtLogic() {
   const [formData, setFormData] = useState({
     name: '',
     price: 0,
-    description: '',
-    characteristics: '',
+    description: '', // Usar 'description' en lugar de 'characteristics'
     images: [], // Aquí se guardan las imágenes (File objects o {id, image} objects)
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // NUEVO ESTADO: para guardar los IDs de las imágenes a eliminar
   const [imagesToDelete, setImagesToDelete] = useState([]); 
@@ -29,15 +28,16 @@ export function useModifyCourtLogic() {
           setFormData({
             name: court.name,
             price: court.price,
-            description: court.description || '',
-            characteristics: court.characteristics || '',
+            description: court.description || '', // Cargar la descripción
             images: court.images || [], // Cargar imágenes existentes
           });
         } else {
           setError(new Error('Cancha no encontrada.'));
+          toast.error('Cancha no encontrada.'); // Alerta de error
         }
       } catch (err) {
         setError(err);
+        toast.error('Error al cargar la cancha.'); // Alerta de error
       } finally {
         setLoading(false);
       }
@@ -79,15 +79,13 @@ export function useModifyCourtLogic() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setActionStatus(null);
-    setError(null);
+    setError(null); // Eliminar setActionStatus(null);
 
     try {
       const dataToUpdate = new FormData();
       dataToUpdate.append('name', formData.name);
       dataToUpdate.append('price', formData.price);
-      dataToUpdate.append('description', formData.description);
-      dataToUpdate.append('characteristics', formData.characteristics);
+      dataToUpdate.append('description', formData.description); // Usar 'description'
 
       // Añadir nuevas imágenes (objetos File)
       formData.images.forEach(image => {
@@ -104,7 +102,7 @@ export function useModifyCourtLogic() {
       }
 
       await updateCourtUseCase.execute(id, dataToUpdate); // Usar el caso de uso correcto
-      setActionStatus('Cancha actualizada exitosamente.');
+      toast.success('Cancha actualizada exitosamente.'); // Alerta de éxito
       // Redirigir después de un breve retraso para que el usuario vea el mensaje
       setTimeout(() => {
         navigate('/dashboard/canchas/manage'); 
@@ -112,7 +110,7 @@ export function useModifyCourtLogic() {
     } catch (err) {
       console.error('Error al actualizar la cancha:', err);
       setError(err);
-      setActionStatus(`Error: ${err.message || 'No se pudo actualizar la cancha.'}`);
+      toast.error(`Error al actualizar la cancha: ${err.message || 'No se pudo actualizar la cancha.'}`); // Alerta de error
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +120,6 @@ export function useModifyCourtLogic() {
     formData,
     loading,
     error,
-    actionStatus,
     isSubmitting,
     handleChange,
     handleRemoveImage,

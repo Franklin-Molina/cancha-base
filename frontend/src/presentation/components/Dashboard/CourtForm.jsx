@@ -7,7 +7,6 @@ import { Upload, X, Camera, MapPin, DollarSign, FileText, Image } from 'lucide-r
 function CourtForm() {
   const {
     formData,
-    message,
     handleChange,
     handleRemoveImage,
     handleSubmit,
@@ -26,11 +25,7 @@ function CourtForm() {
         </div>
       </div>
       <div className="court-form-widget-content">
-        {message && (
-          <div className={message.type === 'success' ? 'court-form-message-success' : 'court-form-message-error'}>
-            {message.text}
-          </div>
-        )}
+        {/* Eliminamos la lógica de renderizado de mensajes aquí, ya que react-toastify los manejará */}
         <form onSubmit={handleSubmit}>
           {/* Contenedor para Nombre y Precio */}
           <div className="court-form-name-price-group">

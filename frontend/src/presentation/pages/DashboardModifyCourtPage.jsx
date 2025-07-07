@@ -71,12 +71,13 @@ function DashboardModifyCourtPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="characteristics" className="form-label">Características:</label>
+              <label htmlFor="description" className="form-label">Descripción:</label>
               <textarea
-                id="characteristics"
-                name="characteristics"
-                value={formData.characteristics}
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
+                required
                 className="form-input"
               />
             </div>

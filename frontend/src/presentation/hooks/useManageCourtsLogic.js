@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useButtonDisable from '../hooks/useButtonDisable.js';
 import { ApiCourtRepository } from '../../infrastructure/repositories/api-court-repository'; // Se mantiene para operaciones directas del repo
 import { GetCourtsUseCase } from '../../application/use-cases/courts/get-courts.js'; // Importar el caso de uso
+import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 /**
  * Hook personalizado para la lógica de la página de gestión de canchas.
@@ -32,7 +33,6 @@ export const useManageCourtsLogic = () => {
   const [courts, setCourts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [actionStatus, setActionStatus] = useState('');
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [courtToDelete, setCourtToDelete] = useState(null);
   const hasFetchedCourts = useRef(false);
@@ -50,6 +50,7 @@ export const useManageCourtsLogic = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
+      toast.error('Error al cargar las canchas.'); // Alerta de error
     }
   };
 
@@ -62,32 +63,28 @@ export const useManageCourtsLogic = () => {
 
   const [isSuspending, handleSuspendCourtClick] = useButtonDisable(async (courtId) => {
     try {
-      setActionStatus('Suspendiendo cancha...');
       await courtRepository.updateCourtStatus(courtId, false);
       setCourts(prevCourts =>
         prevCourts.map(c => c.id === courtId ? { ...c, is_active: false } : c)
       );
-      setActionStatus('Cancha suspendida exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
+      toast.success('Cancha suspendida exitosamente.'); // Alerta de éxito
     } catch (error) {
       console.error(`Error al suspender cancha ${courtId}:`, error);
-      setActionStatus(`Error al suspender cancha: ${error.message}`);
+      toast.error(`Error al suspender cancha: ${error.message}`); // Alerta de error
       throw error;
     }
   });
 
   const [isReactivating, handleReactivateCourtClick] = useButtonDisable(async (courtId) => {
     try {
-      setActionStatus('Reactivando cancha...');
       await courtRepository.updateCourtStatus(courtId, true);
       setCourts(prevCourts =>
         prevCourts.map(c => c.id === courtId ? { ...c, is_active: true } : c)
       );
-      setActionStatus('Cancha reactivada exitosamente.');
-      setTimeout(() => setActionStatus(''), 3000);
+      toast.success('Cancha reactivada exitosamente.'); // Alerta de éxito
     } catch (error) {
       console.error(`Error al reactivar cancha ${courtId}:`, error);
-      setActionStatus(`Error al reactivar cancha: ${error.message}`);
+      toast.error(`Error al reactivar cancha: ${error.message}`); // Alerta de error
       throw error;
     }
   });
@@ -101,14 +98,12 @@ export const useManageCourtsLogic = () => {
     if (!courtToDelete) return;
 
     try {
-      setActionStatus(`Eliminando cancha ${courtToDelete.name}...`);
       await courtRepository.deleteCourt(courtToDelete.id);
       setCourts(prevCourts => prevCourts.filter(c => c.id !== courtToDelete.id));
-      setActionStatus(`Cancha ${courtToDelete.name} eliminada exitosamente.`);
-      setTimeout(() => setActionStatus(''), 3000);
+      toast.success(`Cancha ${courtToDelete.name} eliminada exitosamente.`); // Alerta de éxito
     } catch (error) {
       console.error(`Error al eliminar la cancha ${courtToDelete.id}:`, error);
-      setActionStatus(`Error al eliminar cancha ${courtToDelete.name}: ${error.message}`);
+      toast.error(`Error al eliminar cancha ${courtToDelete.name}: ${error.message}`); // Alerta de error
       throw error;
     } finally {
       setCourtToDelete(null);
@@ -136,7 +131,6 @@ export const useManageCourtsLogic = () => {
     courts,
     loading,
     error,
-    actionStatus,
     selectedCourt,
     courtToDelete,
     isSuspending,

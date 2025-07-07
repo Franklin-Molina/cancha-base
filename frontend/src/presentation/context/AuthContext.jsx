@@ -7,6 +7,7 @@ import { LoginUserUseCase } from '../../application/use-cases/users/login-user.j
 import { LogoutUserUseCase } from '../../application/use-cases/users/logout-user.js';
 import { GetAuthenticatedUserUseCase } from '../../application/use-cases/users/get-authenticated-user.js';
 import { LoginWithGoogleUseCase } from '../../application/use-cases/users/login-with-google.js';
+import { toast } from 'react-toastify'; // Importar toast de react-toastify
 
 // Crear el contexto de autenticación
 const AuthContext = createContext(null);
@@ -87,6 +88,7 @@ export const AuthProvider = ({ children }) => {
       // Actualizar el estado del contexto con el usuario autenticado
       setUser(user);
       setIsAuthenticated(true);
+      toast.success('¡Inicio de sesión exitoso!'); // Alerta de éxito
 
       // Redirigir después de un login exitoso según el rol
       if (user.role === 'adminglobal') {
@@ -102,24 +104,25 @@ export const AuthProvider = ({ children }) => {
       if (error.response && error.response.data) {
         // Loguear el string exacto de la respuesta de error
         console.log('Raw error response data string (AuthContext):', JSON.stringify(error.response.data));
-        let errorMessage = null;
-
+        let errorMessage = 'Error en el inicio de sesión.'; // Mensaje por defecto
+        
         if (error.response.data.detail) {
           errorMessage = error.response.data.detail;
         } else if (Array.isArray(error.response.data.non_field_errors) && error.response.data.non_field_errors.length > 0) {
           errorMessage = error.response.data.non_field_errors[0];
         }
         
-        if (errorMessage && errorMessage.toLowerCase().includes("cuenta de usuario está inactiva")) {
-          alert("Tu cuenta está suspendida. Por favor, contacta al administrador.");
+        if (errorMessage.toLowerCase().includes("cuenta de usuario está inactiva")) {
+          toast.error("Tu cuenta está suspendida. Por favor, contacta al administrador."); // Usar toast
           return; 
-        } else if (errorMessage) {
-          // Si hay un mensaje de error pero no es el de cuenta inactiva, relanzar con ese mensaje.
-          throw new Error(errorMessage);
+        } else {
+          toast.error(errorMessage); // Usar toast para otros errores
         }
+      } else {
+        toast.error('Error en el inicio de sesión. Verifica tu conexión.'); // Mensaje genérico si no hay respuesta de error
       }
-      // Relanzar otros errores o si no hay un mensaje de error claro del backend
-      throw error;
+      // No relanzar el error si ya se manejó con toast
+      // throw error; // Comentar o eliminar esta línea
     }
   };
 
@@ -132,9 +135,11 @@ export const AuthProvider = ({ children }) => {
       // Limpiar estado local
       setIsAuthenticated(false);
       setUser(null);      
+      toast.info('Sesión cerrada exitosamente.'); // Alerta de cierre de sesión
       return <Navigate to="/" replace />; // Redirigir a la página de inicio
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+      toast.error('Error al cerrar sesión.'); // Alerta de error al cerrar sesión
       // Manejar el error si es necesario, aunque logout local debería ser robusto
     }
   };
