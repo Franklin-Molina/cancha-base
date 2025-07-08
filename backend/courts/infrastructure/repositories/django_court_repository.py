@@ -84,7 +84,15 @@ class DjangoCourtRepository(ICourtRepository):
         return await self._update_court_sync(court, court_data, images_data, images_to_delete)
 
     @sync_to_async
+    @transaction.atomic # Asegurar que la operación sea atómica
     def _delete_court_sync(self, court: Court) -> None:
+        # Eliminar las imágenes asociadas manualmente para que se llame al método delete() de CourtImage
+        # Esto asegura que los archivos físicos se eliminen.
+        for image in court.images.all():
+            image.delete()
+        
+        # Ahora eliminar la instancia de la cancha, lo que también eliminará las relaciones en cascada
+        # (aunque las imágenes ya fueron manejadas)
         court.delete()
 
     async def delete(self, court_id: int) -> bool:

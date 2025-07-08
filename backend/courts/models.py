@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError # Importar ValidationError
+import os # Importar el módulo os para manejar operaciones de archivos
 
 class Court(models.Model):
     """
@@ -30,3 +31,13 @@ class CourtImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.court.name}"
+
+    def delete(self, *args, **kwargs):
+        """
+        Sobrescribe el método delete para eliminar el archivo de imagen asociado
+        cuando se elimina el objeto CourtImage.
+        """
+        if self.image:
+            if os.path.isfile(self.image.path):
+                os.remove(self.image.path)
+        super().delete(*args, **kwargs)

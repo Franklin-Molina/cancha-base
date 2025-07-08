@@ -15,34 +15,37 @@ class CourtSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Valida los campos 'name', 'description' y 'price'.
+        Valida los campos 'name', 'description' y 'price' solo si están presentes en los datos.
         Asegura que los campos de texto no estén vacíos y que el precio sea un número positivo.
         """
-        # Validar que 'name' no esté vacío o solo espacios en blanco
-        name = data.get('name')
-        if not name or not name.strip():
-            raise serializers.ValidationError({"name": "El nombre de la cancha no puede estar vacío."})
-        data['name'] = name.strip() # Limpiar espacios en blanco
+        # Validar 'name' si está presente
+        if 'name' in data:
+            name = data['name']
+            if not name or not name.strip():
+                raise serializers.ValidationError({"name": "El nombre de la cancha no puede estar vacío."})
+            data['name'] = name.strip() # Limpiar espacios en blanco
 
-        # Validar que 'description' no esté vacío o solo espacios en blanco
-        description = data.get('description')
-        if not description or not description.strip():
-            raise serializers.ValidationError({"description": "La descripción no puede estar vacía."})
-        data['description'] = description.strip() # Limpiar espacios en blanco
+        # Validar 'description' si está presente
+        if 'description' in data:
+            description = data['description']
+            if not description or not description.strip():
+                raise serializers.ValidationError({"description": "La descripción no puede estar vacía."})
+            data['description'] = description.strip() # Limpiar espacios en blanco
 
-        # Validar que 'price' sea un número positivo
-        price = data.get('price')
-        if price is None:
-            raise serializers.ValidationError({"price": "El precio es obligatorio."})
-        if not isinstance(price, (int, float)):
-            try:
-                price = float(price) # Intentar convertir a float si no es ya un número
-            except ValueError:
-                raise serializers.ValidationError({"price": "El precio debe ser un número válido."})
-        
-        if price <= 0:
-            raise serializers.ValidationError({"price": "El precio debe ser un número positivo."})
-        data['price'] = price # Asegurar que el precio sea un número en los datos validados
+        # Validar 'price' si está presente
+        if 'price' in data:
+            price = data['price']
+            if price is None:
+                raise serializers.ValidationError({"price": "El precio es obligatorio."})
+            if not isinstance(price, (int, float)):
+                try:
+                    price = float(price) # Intentar convertir a float si no es ya un número
+                except ValueError:
+                    raise serializers.ValidationError({"price": "El precio debe ser un número válido."})
+            
+            if price <= 0:
+                raise serializers.ValidationError({"price": "El precio debe ser un número positivo."})
+            data['price'] = price # Asegurar que el precio sea un número en los datos validados
 
         return data
 

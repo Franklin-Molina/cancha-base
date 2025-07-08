@@ -15,6 +15,7 @@ import time # Importar el módulo time
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # Asegurarse que TokenObtainPairSerializer está importado
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken # Importar excepciones necesarias
+from rest_framework.exceptions import ValidationError # Importar ValidationError
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
@@ -226,10 +227,14 @@ class LoginView(views.APIView): # Cambiado de TokenObtainPairView a views.APIVie
             self.logger.warning(f"LoginView: TokenError durante la validación: {str(e)}")
             # Re-lanzar como InvalidToken para que DRF lo maneje correctamente y devuelva un 401
             raise InvalidToken(e.args[0])
+        except ValidationError as e: # Capturar específicamente ValidationError
+            # No loguear el ValidationError para evitar que aparezca en la consola
+            # Devolver los errores del serializador directamente
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             self.logger.error(f"LoginView: Excepción no esperada durante serializer.is_valid: {str(e)}", exc_info=True)
             # Devolver una respuesta de error genérica si no es un error de token conocido
-            return Response({"detail": "Se produjo un error durante la validación."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Se produjo un error interno durante la validación."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         validation_time = time.time()
         # self.logger.debug(f"LoginView: Tiempo de validación del serializador (autenticación y generación de token): {validation_time - validation_start_time:.4f} segundos") # Log comentado

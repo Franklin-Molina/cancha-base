@@ -16,7 +16,7 @@ function CourtForm() {
   return (
     <div className="court-form-widget">
       <div className="court-form-widget-header">
-        <MapPin className="header-icon" /> {/* Icono de ubicación */}
+        <MapPin className="header-icon" style={{ display: 'inline-block' }} /> {/* Icono de ubicación */}
         <div className="header-text-content">
           <div className="court-form-widget-title">Crear Nueva Cancha</div>
           <div className="court-form-widget-subtitle">Completa la información para registrar tu cancha deportiva

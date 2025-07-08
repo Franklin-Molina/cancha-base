@@ -134,7 +134,7 @@ class CourtDetail(views.APIView):
                 return Response(response_serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(f"DEBUG: Error en CourtDetail PATCH: {e}") # DEBUG
+            # print(f"DEBUG: Error en CourtDetail PATCH: {e}") # DEBUG // Eliminado mensaje de consola
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk, *args, **kwargs):
@@ -231,5 +231,5 @@ class CourtWeeklyAvailabilityView(views.APIView):
             )
             return Response(weekly_availability_data, status=status.HTTP_200_OK)
         except Exception as e:
-            print(f"Error en CourtWeeklyAvailabilityView: {e}")
+            # print(f"Error en CourtWeeklyAvailabilityView: {e}") // Eliminado mensaje de consola
             return Response({"error": "Error al obtener la disponibilidad semanal."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

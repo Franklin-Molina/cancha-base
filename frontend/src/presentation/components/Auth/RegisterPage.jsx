@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import '../../../styles/RegisterPage.css'; // Importar el archivo CSS
 
 /**
- * Página de registro tradicional.
+ * Página de registro profesional.
  * Permite a los usuarios registrarse con email y contraseña.
  * @returns {JSX.Element} El elemento JSX de la página de registro.
  */
@@ -22,13 +22,19 @@ function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   const API_URL = import.meta.env.VITE_API_URL;
 
   const handleRegistration = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
+      setLoading(false);
       return;
     }
 
@@ -44,25 +50,19 @@ function RegisterPage() {
       });
 
       console.log('Registro exitoso:', response.data);
-      setSuccess('Registro exitoso. Intentando iniciar sesión...');
+      setSuccess('¡Registro exitoso! Bienvenido a nuestra plataforma.');
       setError('');
-/* 
-      try {
-        const loginResponse = await axios.post('http://localhost:8000/api/users/login/', {
-          username,
-          password,
-        });
+      
+      // Limpiar formulario
+      setUsername('');
+      setFirstName('');
+      setLastName('');
+      setAge('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
 
-        const { access, refresh } = loginResponse.data;
-        login(access, refresh);
-        console.log('Inicio de sesión automático exitoso.');
-        setSuccess('Registro y inicio de sesión exitosos.');
-
-      } catch (loginError) {
-        console.error('Error en el inicio de sesión automático:', loginError);
-        setError('Registro exitoso, pero no se pudo iniciar sesión automáticamente. Por favor, inicia sesión manualmente.');
-      } */
-
+     
     } catch (error) {
       console.error('Error en el registro:', error);
       if (error.response && error.response.data) {
@@ -75,120 +75,235 @@ function RegisterPage() {
         }
         setError(errorMessage.trim());
       } else {
-        setError('Error en el registro. Inténtalo de nuevo.');
+        setError('Error en el registro. Por favor, inténtalo de nuevo.');
       }
       setSuccess('');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleNavigation = (path) => {
+    // Función para navegar a otras páginas
+    navigate(path);
+  };
+
   return (
-    <div className="register-page-container"> {/* Contenedor para centrar la página */}
-      <div className="register-container"> {/* Usar la clase del HTML */}
-        <h2>Registro Users</h2>
-        {/* Mostrar error y éxito dentro de un div con clase error */}
-        <div className="error">
-          {error && <p>{error}</p>}
-          {success && <p>{success}</p>}
+    <div className="register-page-container">
+      <div className="register-wrapper">
+        {/* Header */}
+        <div className="register-header">
+          <div className="register-icon"></div>
+          <h1 className="register-title">Crear Cuenta</h1>
+          <p className="register-subtitle">Únete a nuestra comunidad y comienza tu experiencia</p>
         </div>
-        <form onSubmit={handleRegistration}> {/* Eliminar className de form */}
-          {/* Usuario y Email en una fila */}
-          <div className="form-row">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-input" // Usar la clase del HTML
-                id="username"
-                placeholder="Usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="email"
-                className="form-input" // Usar la clase del HTML
-                id="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </div>
 
-          {/* Nombre y Apellido en otra fila */}
-          <div className="form-row">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-input" // Usar la clase del HTML
-                id="firstName"
-                placeholder="Nombre"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
+        {/* Contenedor principal */}
+        <div className="register-container">
+          <h2>Registro de Usuario</h2>
+          
+          {/* Mensajes de alerta */}
+          {(error || success) && (
+            <div className={`alert-container ${error ? 'error' : 'success'}`}>
+              <div className={`alert-icon ${error ? 'error' : 'success'}`}></div>
+              <p>{error || success}</p>
             </div>
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-input" // Usar la clase del HTML
-                id="lastName"
-                placeholder="Apellido"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+          )}
 
-          {/* Edad y Contraseña en otra fila */}
-          <div className="form-row">
-            <div className="form-group">
-              <input
-                type="number"
-                className="form-input" // Usar la clase del HTML
-                id="age"
-                placeholder="Edad"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="password"
-                className="form-input" // Usar la clase del HTML
-                id="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+          <form onSubmit={handleRegistration}>
+            {/* Usuario y Email */}
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label"> Usuario</label>
+                <div className="input-container">
+                  <div className="input-icon user"></div>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Ingresa tu usuario"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
 
-          {/* Confirmar Contraseña en su propia fila */}
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-input" // Usar la clase del HTML
-              id="confirmPassword"
-              placeholder="Confirmar Contraseña"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <div className="input-container">
+                  <div className="input-icon mail"></div>
+                  <input
+                    type="email"
+                    className="form-input"
+                    placeholder="tu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+            </div>
 
-          {/* Botón Registrar en su propia fila */}
-          <div className="form-group">
-            <button type="submit" className="submit-button">Registrar</button> {/* Usar la clase del HTML */}
+            {/* Nombre y Apellido */}
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Nombre</label>
+                <div className="input-container">
+                  <div className="input-icon user"></div>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Tu nombre"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Apellido</label>
+                <div className="input-container">
+                  <div className="input-icon user"></div>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Tu apellido"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Edad y Contraseña */}
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Edad</label>
+                <div className="input-container">
+                  <div className="input-icon calendar"></div>
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="Tu edad"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    min="1"
+                    max="120"
+                    required
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Contraseña</label>
+                <div className="input-container">
+                  <div className="input-icon lock"></div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-input"
+                    placeholder="Tu contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className={`password-toggle ${showPassword ? 'visible' : 'hidden'}`}
+                    onClick={togglePasswordVisibility}
+                    disabled={loading}
+                  ></button>
+                </div>
+              </div>
+            </div>
+
+            {/* Confirmar Contraseña */}
+            <div className="form-row single">
+              <div className="form-group">
+                <label className="form-label">Confirmar Contraseña</label>
+                <div className="input-container">
+                  <div className="input-icon lock"></div>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="form-input"
+                    placeholder="Confirma tu contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className={`password-toggle ${showConfirmPassword ? 'visible' : 'hidden'}`}
+                    onClick={toggleConfirmPasswordVisibility}
+                    disabled={loading}
+                  ></button>
+                </div>
+              </div>
+            </div>
+
+            {/* Botón de registro */}
+            <div className="form-row single">
+              <div className="form-group">
+                <button 
+                  type="submit" 
+                  className="submit-button"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <div className="loading-spinner"></div>
+                      Registrando...
+                    </>
+                  ) : (
+                    'Crear Cuenta'
+                  )}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Footer del formulario */}
+          <div className="form-footer">
+            <p>
+              ¿Ya tienes una cuenta?{' '}
+              <a href="#" onClick={() => handleNavigation('/login')}>
+                Iniciar Sesión
+              </a>
+            </p>
           </div>
-        </form>
-      </div> {/* Cierre del div register-container */}
-    </div> /* Cierre del div register-page-container */
+        </div>
+
+        {/* Información adicional */}
+        <div className="bottom-info">
+          <p>
+            Al registrarte, aceptas nuestros{' '}
+            <a href="#" /* onClick={() => handleNavigation('/terms')} */>
+              Términos de Servicio
+            </a>
+            {' '}y{' '}
+            <a href="#" /* onClick={() => handleNavigation('/privacy')} */>
+              Política de Privacidad
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 

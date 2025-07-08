@@ -1,35 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import '../../../styles/Header.css'; // Importar el archivo CSS
+import '../../../styles/Header.css';
 
-
-function Header({ openAuthModal }) { // Recibir openAuthModal como prop
-  const { isAuthenticated, user } = useAuth(); // Obtener user del contexto
+function Header({ openAuthModal }) {
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <header className="app-header">
-      <Link to="/"> {/* Envolver el título con Link a la página de inicio */}
-        <div className="app-header-title">Inicio</div> {/* Puedes reemplazar esto con el logo o nombre de la app */}
-      </Link>
+      <div className="header-left">
+        <Link to="/" className="app-logo">
+          Sintetica God
+        </Link>
+      </div>
+
       <nav className="app-nav">
-        {!isAuthenticated && (
+        {!isAuthenticated ? (
           <>
-            {/* Usar un div con onClick para abrir el modal */}
-            <div onClick={openAuthModal} style={{ cursor: 'pointer' }}>Iniciar Sesión</div>
-            <Link to="/register">Registrar</Link>
+            <div onClick={openAuthModal} className="nav-link nav-button-home">
+              Iniciar Sesión
+            </div>
+            <Link to="/register" className="nav-link">
+              Registrarse
+            </Link>
           </>
-        )}
-        {isAuthenticated && (
+        ) : (
           <>
-            {/* Aquí se podrían añadir enlaces de navegación para usuarios autenticados */}
-            <Link to="/courts">Canchas</Link>
-            <Link to="/profile">Perfil</Link>
-            {/* Mostrar enlace al dashboard solo si el usuario es admin */}
-            {user && user.is_staff && (
-              <Link to="/dashboard">Dashboard</Link>
+            <Link to="/courts" className="nav-link">Canchas</Link>
+            <Link to="/profile" className="nav-link">Perfil</Link>
+            {user?.is_staff && (
+              <Link to="/dashboard" className="nav-link">Dashboard</Link>
             )}
-            {/* TODO: Añadir botón de cerrar sesión */}
           </>
         )}
       </nav>

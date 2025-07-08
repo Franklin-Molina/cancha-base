@@ -40,11 +40,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                         raise serializers.ValidationError("La cuenta de usuario está inactiva.", code="authorization")
                     else:
                         # El usuario existe y está activo, pero la contraseña es incorrecta.
-                        logger.debug("Autenticación fallida: credenciales inválidas (contraseña incorrecta).")
+                       # logger.debug("Autenticación fallida: credenciales inválidas (contraseña incorrecta).")
                         raise serializers.ValidationError("Credenciales inválidas", code="authorization")
                 except User.DoesNotExist:
                     # El usuario no existe.
-                    logger.debug("Autenticación fallida: usuario no encontrado.")
+                    #logger.debug("Autenticación fallida: usuario no encontrado.")
                     raise serializers.ValidationError("Credenciales inválidas", code="authorization")
             
             # Si user_authenticated no es None, significa que el usuario se autenticó correctamente

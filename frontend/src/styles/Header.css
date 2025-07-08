@@ -68,3 +68,59 @@ nav{
 
 
 /* Boton */
+/* ===== Header General ===== */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 32px;
+  background-color: #1f2937;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ===== Logo / Título ===== */
+.app-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fcfcfc;
+  text-decoration: none;
+}
+
+/* ===== Navegación ===== */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  font-size: 1rem;
+  color: #edeff3;
+  text-decoration: none;
+  padding: 8px 14px;
+  transition: background 0.2s ease, color 0.2s ease;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  background-color: #241e77;
+  color: black;
+}
+
+.nav-button-home {
+  background-color: #253d70f6;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #3a7bd5;
+}
+
