@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
+import useRegisterForm from '../../hooks/useRegisterForm.js'; // Importar el hook personalizado
 import '../../../styles/RegisterPage.css'; // Importar el archivo CSS
 
 /**
@@ -10,78 +9,21 @@ import '../../../styles/RegisterPage.css'; // Importar el archivo CSS
  * @returns {JSX.Element} El elemento JSX de la página de registro.
  */
 function RegisterPage() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const {
+    username, setUsername, usernameError, setUsernameError, validateUsername,
+    firstName, setFirstName, firstNameError, setFirstNameError, validateName,
+    lastName, setLastName, lastNameError, setLastNameError,
+    age, setAge, ageError, setAgeError, validateAge,
+    email, setEmail, emailError, setEmailError, validateEmail,
+    password, setPassword, passwordError, setPasswordError, validatePassword,
+    confirmPassword, setConfirmPassword, confirmPasswordError, setConfirmPasswordError, validateConfirmPassword,
+    error, success, loading,
+    handleRegistration,
+    navigate, // navigate se obtiene del hook
+  } = useRegisterForm();
 
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [age, setAge] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  const handleRegistration = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await axios.post(`${API_URL}/api/users/register/`, {
-        username,
-        email,
-        password,
-        password2: confirmPassword,
-        first_name: firstName,
-        last_name: lastName,
-        edad: age,
-      });
-
-      console.log('Registro exitoso:', response.data);
-      setSuccess('¡Registro exitoso! Bienvenido a nuestra plataforma.');
-      setError('');
-      
-      // Limpiar formulario
-      setUsername('');
-      setFirstName('');
-      setLastName('');
-      setAge('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-
-     
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      if (error.response && error.response.data) {
-        const backendErrors = error.response.data;
-        let errorMessage = 'Error en el registro: ';
-        for (const field in backendErrors) {
-          if (backendErrors.hasOwnProperty(field)) {
-            errorMessage += `${field}: ${backendErrors[field].join(', ')} `;
-          }
-        }
-        setError(errorMessage.trim());
-      } else {
-        setError('Error en el registro. Por favor, inténtalo de nuevo.');
-      }
-      setSuccess('');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -124,33 +66,41 @@ function RegisterPage() {
               <div className="form-group">
                 <label className="form-label"> Usuario</label>
                 <div className="input-container">
-                  <div className="input-icon user"></div>
+                  <div className="input-icon user"></div> {/* Icono de usuario */}
                   <input
                     type="text"
-                    className="form-input"
+                    className={`form-input ${usernameError ? 'input-error' : ''}`}
                     placeholder="Ingresa tu usuario"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      setUsernameError(validateUsername(e.target.value));
+                    }}
                     required
                     disabled={loading}
                   />
                 </div>
+                {usernameError && <p className="error-message">{usernameError}</p>}
               </div>
 
               <div className="form-group">
                 <label className="form-label">Email</label>
                 <div className="input-container">
-                  <div className="input-icon mail"></div>
+                  <div className="input-icon mail"></div> {/* Icono de email */}
                   <input
                     type="email"
-                    className="form-input"
+                    className={`form-input ${emailError ? 'input-error' : ''}`}
                     placeholder="tu@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailError(validateEmail(e.target.value));
+                    }}
                     required
                     disabled={loading}
                   />
                 </div>
+                {emailError && <p className="error-message">{emailError}</p>}
               </div>
             </div>
 
@@ -162,14 +112,18 @@ function RegisterPage() {
                   <div className="input-icon user"></div>
                   <input
                     type="text"
-                    className="form-input"
+                    className={`form-input ${firstNameError ? 'input-error' : ''}`}
                     placeholder="Tu nombre"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      setFirstNameError(validateName(e.target.value, 'nombre'));
+                    }}
                     required
                     disabled={loading}
                   />
                 </div>
+                {firstNameError && <p className="error-message">{firstNameError}</p>}
               </div>
 
               <div className="form-group">
@@ -178,35 +132,41 @@ function RegisterPage() {
                   <div className="input-icon user"></div>
                   <input
                     type="text"
-                    className="form-input"
+                    className={`form-input ${lastNameError ? 'input-error' : ''}`}
                     placeholder="Tu apellido"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      setLastNameError(validateName(e.target.value, 'apellido'));
+                    }}
                     required
                     disabled={loading}
                   />
                 </div>
+                {lastNameError && <p className="error-message">{lastNameError}</p>}
               </div>
             </div>
 
-            {/* Edad y Contraseña */}
+            {/* Fecha de Nacimiento y Contraseña */}
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Edad</label>
+                <label className="form-label">Fecha de Nacimiento</label>
                 <div className="input-container">
                   <div className="input-icon calendar"></div>
                   <input
-                    type="number"
-                    className="form-input"
-                    placeholder="Tu edad"
+                    type="date"
+                    className={`form-input ${ageError ? 'input-error' : ''}`}
+                    placeholder="Tu fecha de nacimiento"
                     value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    min="1"
-                    max="120"
+                    onChange={(e) => {
+                      setAge(e.target.value);
+                      setAgeError(validateAge(e.target.value));
+                    }}
                     required
                     disabled={loading}
                   />
                 </div>
+                {ageError && <p className="error-message">{ageError}</p>}
               </div>
 
               <div className="form-group">
@@ -215,10 +175,14 @@ function RegisterPage() {
                   <div className="input-icon lock"></div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="form-input"
+                    className={`form-input ${passwordError ? 'input-error' : ''}`}
                     placeholder="Tu contraseña"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError(validatePassword(e.target.value));
+                      setConfirmPasswordError(validateConfirmPassword(confirmPassword, e.target.value)); // Revalidar confirmación
+                    }}
                     required
                     disabled={loading}
                   />
@@ -229,6 +193,7 @@ function RegisterPage() {
                     disabled={loading}
                   ></button>
                 </div>
+                {passwordError && <p className="error-message">{passwordError}</p>}
               </div>
             </div>
 
@@ -240,10 +205,13 @@ function RegisterPage() {
                   <div className="input-icon lock"></div>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    className="form-input"
+                    className={`form-input ${confirmPasswordError ? 'input-error' : ''}`}
                     placeholder="Confirma tu contraseña"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setConfirmPasswordError(validateConfirmPassword(e.target.value, password));
+                    }}
                     required
                     disabled={loading}
                   />
@@ -254,16 +222,17 @@ function RegisterPage() {
                     disabled={loading}
                   ></button>
                 </div>
+                {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
               </div>
             </div>
 
             {/* Botón de registro */}
             <div className="form-row single">
               <div className="form-group">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="submit-button"
-                  disabled={loading}
+                  disabled={loading || usernameError || firstNameError || lastNameError || ageError || emailError || passwordError || confirmPasswordError}
                 >
                   {loading ? (
                     <>

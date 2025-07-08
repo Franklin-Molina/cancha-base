@@ -30,7 +30,7 @@ class User(AbstractUser):
     # El campo 'role' ahora es una ForeignKey
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True, related_name='users')
     
-    edad = models.IntegerField(null=True, blank=True)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
     is_staff = models.BooleanField(default=False)
  
     groups = models.ManyToManyField(
