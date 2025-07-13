@@ -1,0 +1,49 @@
+.client-dashboard-page {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.client-dashboard-page h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.bookings-list {
+  list-style: none;
+  padding: 0;
+}
+
+.booking-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.booking-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.booking-item-details {
+  font-size: 1rem;
+  color: #555;
+}
+
+.booking-item-details .court-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.no-bookings-message {
+  font-size: 1.1rem;
+  color: #777;
+  margin-top: 2rem;
+  text-align: center;
+}

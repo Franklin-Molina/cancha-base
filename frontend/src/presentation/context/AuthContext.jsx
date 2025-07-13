@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         } else if (authenticatedUser.is_staff) { // Para role='admin' u otros staff
             navigate('/dashboard'); // Redirigir a administradores de cancha al dashboard
         } else { // Para role='cliente'
-            navigate('/profile'); // Redirigir a usuarios normales al perfil
+            navigate('/client'); // Redirigir a usuarios normales al dashboard de cliente
         }
 
       } else {
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
       } else if (user.is_staff) { // Para role='admin' u otros staff
           navigate('/dashboard'); // Redirigir a administradores de cancha al dashboard
       } else { // Para role='cliente'
-          navigate('/profile'); // Redirigir a usuarios normales al perfil
+          navigate('/client'); // Redirigir a usuarios normales al dashboard de cliente
       }
 
     } catch (error) {

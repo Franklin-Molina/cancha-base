@@ -8,7 +8,11 @@ function DashboardNavbar({ toggleSidebar }) {
   const navigate = useNavigate(); // Obtener la función de navegación
 
   const handleNavbarRightClick = () => {
-    navigate('/dashboard/perfil'); // Redirigir a /dashboard/perfil
+    if (user.role === 'cliente') {
+      navigate('/client/profile');
+    } else {
+      navigate('/dashboard/perfil');
+    }
   };
 
   return (

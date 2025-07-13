@@ -17,10 +17,10 @@ class DjangoBookingRepository(IBookingRepository):
     """
 
     @sync_to_async
-    def get_all(self, user: Optional[User] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
+    def get_all(self, user_id: Optional[int] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
         queryset = Booking.objects.all().select_related('court', 'user', 'payment')
-        if user:
-            queryset = queryset.filter(user=user)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
         if filters:
             # Aplicar filtros adicionales si se proporcionan
             # Ejemplo: queryset = queryset.filter(**filters)

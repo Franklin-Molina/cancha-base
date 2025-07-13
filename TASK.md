@@ -8,3 +8,4 @@
 - [x] Modificar la página de inicio para mostrar solo canchas con estado "activo" (30/06/2025)
 - [x] Mejorar la organización del frontend aplicando la arquitectura (30/06/2025)
 - [x] Redirigir `navbar-right` a `/dashboard/perfil` en `DashboardNavbar.jsx` (01/07/2025)
+- [x] Crear Dashboard de Cliente (12/07/2025)

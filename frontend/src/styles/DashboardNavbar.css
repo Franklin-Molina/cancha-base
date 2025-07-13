@@ -118,3 +118,23 @@
     width: 80px;
   }
 }
+
+.navbar-title {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #fbecec;
+}

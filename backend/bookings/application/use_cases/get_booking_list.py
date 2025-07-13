@@ -11,5 +11,6 @@ class GetBookingListUseCase:
     def __init__(self, booking_repository: IBookingRepository):
         self.booking_repository = booking_repository
 
-    async def execute(self, user: Optional[User] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
-        return await self.booking_repository.get_all(user, filters)
+    async def execute(self, user_id: Optional[int] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
+        # El repositorio se encargará de la lógica de filtrado
+        return await self.booking_repository.get_all(user_id=user_id, filters=filters)

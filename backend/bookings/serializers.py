@@ -2,12 +2,18 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError # Importar ValidationError
 from .models import Booking
 from users.models import User # Importar el modelo User
+from courts.models import Court # Importar el modelo Court
+from courts.serializers import CourtSerializer # Importar CourtSerializer
 from django.utils import timezone # Importar timezone
 
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), # Opcional: limitar queryset si es necesario
-        default=serializers.CurrentUserDefault() # Asigna automáticamente el usuario autenticado
+        queryset=User.objects.all(),
+        default=serializers.CurrentUserDefault()
+    )
+    court_details = CourtSerializer(source='court', read_only=True)
+    court = serializers.PrimaryKeyRelatedField(
+        queryset=Court.objects.all(), write_only=True
     )
 
     start_time = serializers.DateTimeField()
@@ -15,7 +21,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = '__all__'
+        fields = ('id', 'user', 'court', 'court_details', 'start_time', 'end_time', 'status', 'payment')
 
     # No es necesario sobrescribir create si usamos CurrentUserDefault
 

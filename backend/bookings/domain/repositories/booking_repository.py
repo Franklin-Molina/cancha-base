@@ -10,9 +10,9 @@ class IBookingRepository(ABC):
     """
 
     @abstractmethod
-    async def get_all(self, user: Optional[User] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
+    async def get_all(self, user_id: Optional[int] = None, filters: Optional[Dict[str, Any]] = None) -> List[Booking]:
         """
-        Obtiene una lista de todas las reservas, opcionalmente filtradas por usuario o otros criterios.
+        Obtiene una lista de todas las reservas, opcionalmente filtradas por ID de usuario o otros criterios.
         """
         pass
 

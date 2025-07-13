@@ -23,6 +23,9 @@ import AdminGlobalDashboardPage from './presentation/pages/AdminGlobalDashboardP
 import ManageAdminsTable from './presentation/components/AdminGlobalDashboard/ManageAdminsTable.jsx'; // Nuevo componente
 import { ToastContainer } from 'react-toastify'; // Importar ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Importar los estilos CSS de react-toastify
+import ClientDashboardLayout from './presentation/components/Dashboard/ClientDashboardLayout.jsx';
+import MyBookingsPage from './presentation/pages/MyBookingsPage.jsx';
+import BookingHistoryPage from './presentation/pages/BookingHistoryPage.jsx';
 
 function App() {
   return (
@@ -45,6 +48,20 @@ function App() {
           <Route path="perfil" element={<DashboardProfilePage />} /> {/* Usar DashboardProfilePage */}
           {/* Ruta para la página de modificación de canchas */}
           <Route path="manage-courts/:id" element={<DashboardModifyCourtPage />} />
+        </Route>
+
+        <Route
+          path="/client"
+          element={
+            <ProtectedRoute>
+              <ClientDashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<MyBookingsPage />} />
+          <Route path="bookings" element={<MyBookingsPage />} />
+          <Route path="history" element={<BookingHistoryPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         <Route

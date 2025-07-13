@@ -101,3 +101,23 @@ class BookingViewSet(viewsets.ModelViewSet): # Cambiar a viewsets.ModelViewSet p
     # enviando 'status': 'CONFIRMED'.
     # Si se necesita una lógica más específica para confirmar, se puede mantener.
     # Por ahora, la eliminaremos para simplificar y usar update_booking_status.
+
+    def list(self, request, *args, **kwargs):
+        booking_repository = DjangoBookingRepository()
+        get_booking_list_use_case = GetBookingListUseCase(booking_repository)
+        
+        user = request.user
+        
+        try:
+            # Si el usuario no es administrador, filtramos por su ID
+            if not user.is_staff:
+                bookings = async_to_sync(get_booking_list_use_case.execute)(user_id=user.id)
+            else:
+                # Los administradores obtienen todas las reservas
+                bookings = async_to_sync(get_booking_list_use_case.execute)()
+
+            serializer = self.get_serializer(bookings, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            # Manejo de errores, por ejemplo, si el caso de uso lanza una excepción
+            return Response({"error": "Error interno al obtener las reservas."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
