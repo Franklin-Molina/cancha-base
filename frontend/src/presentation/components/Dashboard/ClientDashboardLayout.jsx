@@ -38,7 +38,7 @@ const ClientDashboardLayout = () => {
           </ul>
         </nav>
         </aside>
-        <main className="dashboard-content">
+        <main className="dashboard-content-client">
           <Outlet />
         </main>
       </div>

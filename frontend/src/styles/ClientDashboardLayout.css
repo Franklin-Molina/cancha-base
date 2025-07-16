@@ -47,7 +47,7 @@
   font-weight: bold;
 }
 
-.dashboard-content {
+.dashboard-content-client {
   flex-grow: 1;
   padding: 2rem;
   margin-left: 250px; /* Dejar espacio para la sidebar */

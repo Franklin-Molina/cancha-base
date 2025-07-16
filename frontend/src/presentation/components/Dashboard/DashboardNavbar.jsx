@@ -17,29 +17,29 @@ function DashboardNavbar({ toggleSidebar }) {
 
   return (
     <header className="dashboard-navbar">
+      <div className="navbar-left">
         {/* Botón de hamburguesa para móviles */}
-        
-        <div  onClick={toggleSidebar}>
-          <i className="minimizar fas fa-bars"></i> {/* Icono de hamburguesa */}
+        <div className="sidebar-toggle" onClick={toggleSidebar}>
+          <i className="fas fa-bars"></i> {/* Icono de hamburguesa */}
         </div>
 
         {/* Título o logo del dashboard */}
-        <div >
-          <h2>Administracion</h2>
+        <div className="navbar-brand">
+          <h2>Administración</h2>
         </div>
+      </div>
 
-        {/* Información del usuario o elementos de la derecha */}
-        <div className="navbar-right" onClick={handleNavbarRightClick} style={{ cursor: 'pointer' }}> {/* Añadir onClick y estilo de cursor */}
-         
-          <div className="user-profile">          
-            <div className="user-avatar">{user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>
-            <div className="user-info">              
-              <div className="user-name">{user.username}</div>
-              <div className="user-role">{user.role}</div>
-            </div>
+      {/* Información del usuario o elementos de la derecha */}
+      <div className="navbar-right" onClick={handleNavbarRightClick} style={{ cursor: 'pointer' }}> {/* Añadir onClick y estilo de cursor */}
+        <div className="user-profile">
+          <div className="user-avatar">{user.username ? user.username.charAt(0).toUpperCase() : 'U'}</div>
+          <div className="user-info">
+            <div className="user-name">{user.username}</div>
+            <div className="user-role">{user.role}</div>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
   );
 }
 
