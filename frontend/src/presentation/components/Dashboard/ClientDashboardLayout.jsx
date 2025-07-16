@@ -30,6 +30,12 @@ const ClientDashboardLayout = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="matches">
+                <i className="fas fa-users"></i>
+                <span>Buscar Partido</span>
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="profile">
                 <i className="fas fa-user"></i>
                 <span>Mi Perfil</span>

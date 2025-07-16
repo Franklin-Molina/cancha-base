@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'bookings',
     'payments',
     'plans',
+    'matches',
     'django_filters', # Añadir django_filters
 ]
 

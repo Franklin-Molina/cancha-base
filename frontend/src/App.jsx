@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css'; // Importar los estilos CSS de r
 import ClientDashboardLayout from './presentation/components/Dashboard/ClientDashboardLayout.jsx';
 import MyBookingsPage from './presentation/pages/MyBookingsPage.jsx';
 import BookingHistoryPage from './presentation/pages/BookingHistoryPage.jsx';
+import OpenMatchesPage from './presentation/pages/Matches/OpenMatchesPage.jsx'; // Importar la nueva página
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
           <Route index element={<MyBookingsPage />} />
           <Route path="bookings" element={<MyBookingsPage />} />
           <Route path="history" element={<BookingHistoryPage />} />
+          <Route path="matches" element={<OpenMatchesPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
 
