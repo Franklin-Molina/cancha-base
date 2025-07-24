@@ -148,7 +148,7 @@
 
 
 /* Estilos de los inputs */
-.form-input {
+.form-input-register {
   width: 100%;
   padding: 12px 16px 12px 44px;
   border: 2px solid #e5e7eb;
@@ -159,14 +159,14 @@
   backdrop-filter: blur(5px);
 }
 
-.form-input:focus {
+.form-input-register:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   transform: translateY(-1px);
 }
 
-.form-input::placeholder {
+.form-input-register::placeholder {
   color: #9ca3af;
 }
 
@@ -316,7 +316,7 @@
     font-size: 1.5rem;
   }
   
-  .form-input {
+  .form-input-register {
     padding: 10px 14px 10px 40px;
   }
   
@@ -362,13 +362,13 @@
 }
 
 /* Estados de error en inputs */
-.form-input.error {
+.form-input-register.error {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 /* Estados de éxito en inputs */
-.form-input.success {
+.form-input-register.success {
   border-color: #22c55e;
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
@@ -380,14 +380,14 @@
 }
 
 /* Estilo para inputs deshabilitados */
-.form-input:disabled {
+.form-input-register:disabled {
   background-color: #f9fafb;
   color: #6b7280;
   cursor: not-allowed;
 }
 
 /* Mejoras de accesibilidad */
-.form-input:focus-visible {
+.form-input-register:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
@@ -426,17 +426,17 @@
     color: #e5e7eb;
   }
   
-  .form-input {
+  .form-input-register {
     background: rgba(55, 65, 81, 0.8);
     border-color: #4b5563;
     color: #f9fafb;
   }
   
-  .form-input::placeholder {
+  .form-input-register::placeholder {
     color: #9ca3af;
   }
   
-  .form-input:focus {
+  .form-input-register:focus {
     border-color: #60a5fa;
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
   }

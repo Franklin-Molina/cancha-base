@@ -69,7 +69,7 @@ function RegisterPage() {
                   <div className="input-icon user"></div> {/* Icono de usuario */}
                   <input
                     type="text"
-                    className={`form-input ${usernameError ? 'input-error' : ''}`}
+                    className={`form-input-register ${usernameError ? 'input-error' : ''}`}
                     placeholder="Ingresa tu usuario"
                     value={username}
                     onChange={(e) => {
@@ -89,7 +89,7 @@ function RegisterPage() {
                   <div className="input-icon mail"></div> {/* Icono de email */}
                   <input
                     type="email"
-                    className={`form-input ${emailError ? 'input-error' : ''}`}
+                    className={`form-input-register ${emailError ? 'input-error' : ''}`}
                     placeholder="tu@email.com"
                     value={email}
                     onChange={(e) => {
@@ -112,7 +112,7 @@ function RegisterPage() {
                   <div className="input-icon user"></div>
                   <input
                     type="text"
-                    className={`form-input ${firstNameError ? 'input-error' : ''}`}
+                    className={`form-input-register${firstNameError ? 'input-error' : ''}`}
                     placeholder="Tu nombre"
                     value={firstName}
                     onChange={(e) => {
@@ -132,7 +132,7 @@ function RegisterPage() {
                   <div className="input-icon user"></div>
                   <input
                     type="text"
-                    className={`form-input ${lastNameError ? 'input-error' : ''}`}
+                    className={`form-input-register ${lastNameError ? 'input-error' : ''}`}
                     placeholder="Tu apellido"
                     value={lastName}
                     onChange={(e) => {
@@ -155,7 +155,7 @@ function RegisterPage() {
                   <div className="input-icon calendar"></div>
                   <input
                     type="date"
-                    className={`form-input ${ageError ? 'input-error' : ''}`}
+                    className={`form-input-register ${ageError ? 'input-error' : ''}`}
                     placeholder="Tu fecha de nacimiento"
                     value={age}
                     onChange={(e) => {
@@ -175,7 +175,7 @@ function RegisterPage() {
                   <div className="input-icon lock"></div>
                   <input
                     type={showPassword ? "text" : "password"}
-                    className={`form-input ${passwordError ? 'input-error' : ''}`}
+                    className={`form-input-register ${passwordError ? 'input-error' : ''}`}
                     placeholder="Tu contraseña"
                     value={password}
                     onChange={(e) => {
@@ -205,7 +205,7 @@ function RegisterPage() {
                   <div className="input-icon lock"></div>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    className={`form-input ${confirmPasswordError ? 'input-error' : ''}`}
+                    className={`form-input-register ${confirmPasswordError ? 'input-error' : ''}`}
                     placeholder="Confirma tu contraseña"
                     value={confirmPassword}
                     onChange={(e) => {

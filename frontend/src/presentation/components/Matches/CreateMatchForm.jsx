@@ -75,7 +75,7 @@ const CreateMatchForm = ({ onClose, onMatchCreated, match }) => {
 
   return (
     <div className="modal-backdrop">
-      <div className="modal-content">
+      <div className="modal-content-Match">
         <h2>{isEditing ? 'Editar Partido' : 'Crear Nuevo Partido'}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">

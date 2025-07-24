@@ -13,7 +13,7 @@
 }
 
 /* Estilos para el contenido del modal */
-.modal-content {
+.modal-content-Match {
   background-color: #ffffff;
   padding: 1.5rem; /* Reducido de 2rem */
   border-radius: 8px;
