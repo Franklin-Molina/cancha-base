@@ -1,4 +1,5 @@
 from typing import Optional
+from asgiref.sync import sync_to_async
 from matches.domain.repositories.match_repository import IMatchRepository
 from matches.models import OpenMatch
 
@@ -13,5 +14,5 @@ class CancelOpenMatchUseCase:
         match = await self.match_repository.get_open_match_by_id(match_id)
         if match:
             match.status = OpenMatch.MatchStatus.CANCELLED
-            await match.save(update_fields=['status'])
+            await sync_to_async(match.save)(update_fields=['status'])
         return match
