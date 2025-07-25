@@ -9,7 +9,7 @@ class CancelOpenMatchUseCase:
 
     async def execute(self, match_id: int) -> Optional[OpenMatch]:
         # La lógica de si se puede cancelar o no (ej. si ya empezó)
-        # podría ir aquí o en el repositorio.
+        # podría ir aquí o en el repositorio..
         # Por ahora, simplemente cambia el estado.
         match = await self.match_repository.get_open_match_by_id(match_id)
         if match:
